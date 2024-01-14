@@ -3,4 +3,4 @@
 ## Team Structure
 **Supervisor:** Dr. Stéphane Sotèg Somé
 
-**Team Members:** Jared Wagner (300010832)
+**Team Members:** Jared Wagner
