@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Data</title>
+</head>
+<body>
+    <form method="post" action="{{ url_for('submit_data') }}">
+        <label for="data">Data:</label>
+        <input type="text" name="data" id="data">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
