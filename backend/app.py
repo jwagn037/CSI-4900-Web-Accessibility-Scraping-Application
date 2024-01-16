@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 import requests
 from bs4 import BeautifulSoup
+import validators
 
 app = Flask(__name__)
 
@@ -13,8 +14,11 @@ def submit_data():
     # parse URL from submission, get response
     try:
         if request.method == 'POST':
-            url = request.form['data']
-            response = requests.get(url)
+            if validators.url(url): # check that the requested url is valid
+                url = request.form['data']
+                response = requests.get(url)
+            else:
+                return 'URL is invalid'
         else:
             return 'Invalid request method'
     except Exception as e:
