@@ -14,7 +14,7 @@
 *.userprefs
 
 # Ignore pseduocaches
-backend/pseduocache/
+backend/pseudocache/
 
 # Mono auto generated files
 mono_crash.*
