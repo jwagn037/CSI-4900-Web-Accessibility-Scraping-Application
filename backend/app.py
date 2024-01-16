@@ -1,4 +1,6 @@
-from flask import Flask, request, render_template, url_for
+from flask import Flask, request, render_template
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
@@ -8,12 +10,22 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit_data():
+    # parse URL from submission, get response
     try:
         if request.method == 'POST':
-            data = request.form['data']
-            return f'Submitted data: {data}'
+            url = request.form['data']
+            response = requests.get(url)
         else:
             return 'Invalid request method'
+    except Exception as e:
+        return f'An error occurred: {str(e)}'
+    
+    # parse response, get html
+    try:
+        if response.status_code == 200:
+            http = response.text
+            soup = BeautifulSoup(http, 'html.parser')
+        return soup.prettify()
     except Exception as e:
         return f'An error occurred: {str(e)}'
 
