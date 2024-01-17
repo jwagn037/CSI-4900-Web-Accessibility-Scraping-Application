@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import validators
 import hashlib
 import os
+import json
 
 app = Flask(__name__)
 
@@ -34,7 +35,8 @@ def submit_data():
     try:
         soup = BeautifulSoup(http, 'html.parser')
         soup = parse_soup(soup)
-        return soup
+        json_article = write_json(soup)
+        return json_article
     except Exception as e:
         return f'An error occurred: {str(e)}'
 
@@ -81,10 +83,26 @@ def in_cache(url):
     # Takes a naive approach by just grabing headers and paragraphs.
     # Returns ResultSet.
 def parse_soup(soup):
-    # soup = BeautifulSoup(http, 'html.parser') -> just a reminder
-    # soup = parse_soup(soup) -> just a reminder
     tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6',  'p']
     
     text = soup.find_all(tags)
     
     return text
+
+    # Builds a JSON object with the format provided in the wiki.
+    # Needs a ResultSet for text. The rest can be blank, or strings.
+def write_json(text, title='',author='',date=''):
+    json_article = {}
+    json_article['title'] = title
+    json_article['author'] = title
+    json_article['date'] = title
+    content = []
+    
+    for item in text:
+        item_json ={}
+        item_json['type'] = item.name
+        item_json['text'] = item.text
+        content.append(item_json)
+        
+    json_article['content'] = content
+    return json_article
