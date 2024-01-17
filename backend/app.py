@@ -33,7 +33,8 @@ def submit_data():
     # parse response, get html
     try:
         soup = BeautifulSoup(http, 'html.parser')
-        return soup.prettify()
+        soup = parse_soup(soup)
+        return soup
     except Exception as e:
         return f'An error occurred: {str(e)}'
 
@@ -75,3 +76,15 @@ def in_cache(url):
     except Exception as e:
         print(e)
         return False
+
+    # Parses soup using Beautiful Soup 4.
+    # Takes a naive approach by just grabing headers and paragraphs.
+    # Returns ResultSet.
+def parse_soup(soup):
+    # soup = BeautifulSoup(http, 'html.parser') -> just a reminder
+    # soup = parse_soup(soup) -> just a reminder
+    tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6',  'p']
+    
+    text = soup.find_all(tags)
+    
+    return text
