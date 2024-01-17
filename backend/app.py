@@ -52,7 +52,7 @@ def save_to_cache(url):
     os.makedirs(directory, exist_ok=True)  # Create the directory if it doesn't exist
     
     if response.status_code == 200:
-        with open(filename, mode='w') as localfile:
+        with open(filename, mode='w', encoding='utf-8') as localfile:
             print("Saving "+ filename)
             localfile.write(http)
     
@@ -68,7 +68,7 @@ def in_cache(url):
     filename = os.path.join(directory, hashlib.sha256(url.encode()).hexdigest())
     
     try:
-        with open(filename, 'r') as file:
+        with open(filename, 'r', encoding='utf-8') as file:
             print("Reading " + filename)
             http = file.read()
             return http
