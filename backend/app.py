@@ -1,23 +1,23 @@
-from flask import Flask, request, render_template
+from flask import Flask, request
 import requests
 from bs4 import BeautifulSoup
 import validators
 import hashlib
 import os
-import json
 
 app = Flask(__name__)
 
-@app.route('/') # index root
+@app.get('/') # index root
 def index():
-    return render_template('index.html')
+    return "WASA API up."
 
-@app.route('/submit', methods=['POST'])
-def submit_data():
+@app.get('/url')
+def scrape_url():
     # parse URL from submission, get response
     try:
-        if request.method == 'POST':
-            url = request.form['data']
+        if request.method == 'GET':
+            url = request.args.get('data')
+            print(url)
             if validators.url(url): # check that the requested url is valid
                 find_in_cache = in_cache(url)
                 if find_in_cache == False:
@@ -39,9 +39,6 @@ def submit_data():
         return json_article
     except Exception as e:
         return f'An error occurred: {str(e)}'
-
-if __name__ == "__main__":
-    app.run(debug=True) # this should be False in a prod environment
     
     # Saves an HTTP response to the pseudocache.
 def save_to_cache(url):
@@ -84,9 +81,7 @@ def in_cache(url):
     # Returns ResultSet.
 def parse_soup(soup):
     tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6',  'p']
-    
     text = soup.find_all(tags)
-    
     return text
 
     # Builds a JSON object with the format provided in the wiki.
