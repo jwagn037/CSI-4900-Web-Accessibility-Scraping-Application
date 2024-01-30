@@ -1,1 +1,11 @@
-<p>dynamic-article works!</p>
+<div *ngFor="let line of htmlList">
+    <ng-container [ngSwitch]="getTagName(line[0])">
+        <h1 *ngSwitchCase="'h1'">{{ line[1] }}</h1>
+        <h2 *ngSwitchCase="'h2'">{{ line[1] }}</h2>
+        <h3 *ngSwitchCase="'h3'">{{ line[1] }}</h3>
+        <h4 *ngSwitchCase="'h4'">{{ line[1] }}</h4>
+        <h5 *ngSwitchCase="'h5'">{{ line[1] }}</h5>
+        <h6 *ngSwitchCase="'h6'">{{ line[1] }}</h6>
+        <p *ngSwitchDefault>{{ line[1] }}</p>
+    </ng-container>
+</div>
