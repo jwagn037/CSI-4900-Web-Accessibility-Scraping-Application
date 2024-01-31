@@ -1,1 +1,48 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('./assets/Atkinson-Hyperlegible-Regular-102.ttf');
+  }
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Bold';
+  src: url('./assets/Atkinson-Hyperlegible-Bold-102.ttf');
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible BoldItalic';
+    src: url('./assets/Atkinson-Hyperlegible-BoldItalic-102.ttf');
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Italic';
+  src: url('./assets/Atkinson-Hyperlegible-Italic-102.ttf');
+}
+
+* {
+    font-family: 'Atkinson Hyperlegible';
+    font-size: 1.5rem;
+}
+
+h1 {
+    font-family: 'Atkinson Hyperlegible Bold';
+}
+
+h2 {
+    font-family: 'Atkinson Hyperlegible BoldItalic';
+}
+
+h3 {
+    font-family: 'Atkinson Hyperlegible BoldItalic';
+}
+
+h4 {
+    font-family: 'Atkinson Hyperlegible BoldItalic';
+}
+
+h5 {
+    font-family: 'Atkinson Hyperlegible Italic';
+}
+
+h6 {
+    font-family: 'Atkinson Hyperlegible Italic';
+}

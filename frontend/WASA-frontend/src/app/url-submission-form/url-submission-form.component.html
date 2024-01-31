@@ -1,4 +1,10 @@
-<div>
-    <input type="url" placeholder="Enter URL" [(ngModel)] = "userUrl">
-    <button (click)="OnSubmitUrl()">Submit</button>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Your URL</h1>
+        <div class="form-group">
+          <label class="col-form-label col-form-label-lg" for="urlSubmissionField">Enter the URL of an inaccessible webpage below. We will turn it into something you can read!</label>
+          <input class="form-control form-control-lg" type="url" placeholder="Enter URL" [(ngModel)] = "userUrl" id="urlSubmissionField">
+          <button class="btn-primary btn-lg btn-block" (click)="OnSubmitUrl()">Submit</button>
+        </div>
+    </div>
 </div>
