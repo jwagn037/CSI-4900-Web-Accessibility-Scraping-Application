@@ -1,6 +1,7 @@
 from flask import Flask, request
 import requests
 from bs4 import BeautifulSoup
+from trafilatura import extract
 import validators
 import hashlib
 import os
@@ -13,30 +14,28 @@ def index():
 
 @app.get('/url')
 def scrape_url():
-    # parse URL from submission, get response
-    try:
-        if request.method == 'GET':
-            url = request.args.get('data')
-            print(url)
-            if validators.url(url): # check that the requested url is valid
-                find_in_cache = in_cache(url)
-                if find_in_cache == False:
-                    http = save_to_cache(url)
-                else:
-                    http = find_in_cache
-            else:
-                return 'URL is invalid'
-        else:
-            return 'Invalid request method'
-    except Exception as e:
-        return f'An error occurred: {str(e)}'
+    
+    # Check for valid request
+    if request.method != 'GET':
+        return "Invalid request"
+    
+    url = str(request.args.get('data'))
+    print("GET request for: ", url)
+    
+    # check that the requested URL is valid
+    # validators: https://pypi.org/project/validators/
+    if (validators.url(url) == False):
+        return "Invalid URL"
+    
+    # check if we have this URL HTML cached
+    if in_cache(url):
+        http = in_cache(url)
+    else:
+        http = save_to_cache(url)
     
     # parse response, get html
     try:
-        soup = BeautifulSoup(http, 'html.parser')
-        soup = parse_soup(soup)
-        json_article = write_json(soup)
-        return json_article
+        return parse_response(http, mode=0)
     except Exception as e:
         return f'An error occurred: {str(e)}'
     
@@ -75,6 +74,20 @@ def in_cache(url):
     except Exception as e:
         print(e)
         return False
+    
+    # mode == 0: BS4 parsing
+    # mode == 1: Trafilatura parsing
+def parse_response(http, mode):
+    json_article = "\{\}"
+    
+    if (mode == 0):
+        soup = BeautifulSoup(http, 'html.parser')
+        result_set = parse_soup(soup)
+        json_article = write_json(result_set)
+    elif (mode == 1):
+        pass
+
+    return json_article
 
     # Parses soup using Beautiful Soup 4.
     # Takes a naive approach by just grabing headers and paragraphs.
