@@ -60,26 +60,28 @@ def get_url_html(url, directory='pseudocache'):
     os.makedirs(directory, exist_ok=True)  # Create the directory if it doesn't exist
     html_path = os.path.join(directory, hashlib.sha256(url.encode()).hexdigest()) # this is where we will read/save in the cache
     
-    if os.path.isfile(html_path): # We have it saved!
-        try:
-            with open(html_path, 'r', encoding='utf-8') as file:
-                print("Read:", html_path)
-                http = file.read()
-                return http
-        except Exception as e:
-            print(e)
-            return False
+    # Try to read from cache
+    try:
+        with open(html_path, 'r', encoding='utf-8') as file:
+            print("Reading:", html_path)
+            http = file.read()
+            print("Read success:", html_path)
+            return str(http)
+    except Exception as e:
+        print("Read FAILURE:", html_path)
+    
+    # Can't read from cache. Make request.
+    print("Request:", url)
+    response = requests.get(url)
+    html = response.text
+    
+    if response.status_code == 200:
+        with open(html_path, mode='w', encoding='utf-8') as localfile:
+            print("Saving:", html_path)
+            localfile.write(html)
+            print("Save success:", html_path)
     else:
-        response = requests.get(url)
-        html = response.text
-
-        if response.status_code == 200:
-            with open(html_path, mode='w', encoding='utf-8') as localfile:
-                print("Save:", html_path)
-                localfile.write(html)
-                print("Saved:", html_path)
-        else:
-            print("Save FAIL: Invalid status_code:", response.status_code)
+        print("Save FAILURE: Invalid status_code:", response.status_code)
     
     return str(html)
     
