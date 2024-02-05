@@ -30,12 +30,13 @@ def scrape_url():
     if (validators.url(url) == False):
         return "Invalid URL"
     
-    # check if we have this URL HTML cached and set http
-    # http is a string!
-    if in_cache(url):
-        http = read_cache(url)
-    else:
-        http = save_to_cache(url)
+    # get_url_html has some complicated business logic, since
+    # we may want to request fresh HTML *OR* read it from somewhere.
+    http = get_url_html(url, directory="pseudocache")
+    # if in_cache(url):
+    #     http = read_cache(url)
+    # else:
+    #     http = save_to_cache(url) # http.type=str()
     
     # parse response, get html
     try:
@@ -52,45 +53,35 @@ def after_request(response):
     return response
 
 ################################### FUNCTIONS ###################################
-    
-    # Returns: <dir>\<SHA-256 URL hash>
-def locate_url(url, directory='pseudocache'):
+
+# Handles the complex business logic of getting HTML from a URL.
+# Returns HTML. Variable html.type()=str().
+def get_url_html(url, directory='pseudocache'):
     os.makedirs(directory, exist_ok=True)  # Create the directory if it doesn't exist
-    return os.path.join(directory, hashlib.sha256(url.encode()).hexdigest())
-
-    # Saves HTML doc to cache.
-def save_to_cache(url):
-    file_path = locate_url(url)
+    html_path = os.path.join(directory, hashlib.sha256(url.encode()).hexdigest()) # this is where we will read/save in the cache
     
-    response = requests.get(url)
-    html = response.text
-    
-    if response.status_code == 200:
-        with open(file_path, mode='w', encoding='utf-8') as localfile:
-            print("Save:", file_path)
-            localfile.write(html)
-            print("Saved:", file_path)
+    if os.path.isfile(html_path): # We have it saved!
+        try:
+            with open(html_path, 'r', encoding='utf-8') as file:
+                print("Read:", html_path)
+                http = file.read()
+                return http
+        except Exception as e:
+            print(e)
+            return False
     else:
-        print("Save FAIL: Invalid status_code:", response.status_code)
-    
-    return html
+        response = requests.get(url)
+        html = response.text
 
-    # Returns: True (file exsist) OR False (file does not exist)
-def in_cache(url):
-    file_path = locate_url(url)
+        if response.status_code == 200:
+            with open(html_path, mode='w', encoding='utf-8') as localfile:
+                print("Save:", html_path)
+                localfile.write(html)
+                print("Saved:", html_path)
+        else:
+            print("Save FAIL: Invalid status_code:", response.status_code)
     
-    return os.path.isfile(file_path)
-    
-def read_cache(url):
-    file_path = locate_url(url)
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            print("Read:", file_path)
-            http = file.read()
-            return http
-    except Exception as e:
-        print(e)
-        return False
+    return str(html)
     
     # mode == 0: BS4 parsing
     # mode == 1: Trafilatura parsing
