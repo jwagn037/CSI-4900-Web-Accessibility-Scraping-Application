@@ -17,6 +17,9 @@ def index():
 
 @app.get('/url')
 def scrape_url():
+    # API mode options.
+    parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
+    cache_directory = "pseudocache"
     
     # Check for valid request
     if request.method != 'GET':
@@ -30,18 +33,15 @@ def scrape_url():
     if (validators.url(url) == False):
         return "Invalid URL"
     
-    # get_url_html has some complicated business logic, since
-    # we may want to request fresh HTML *OR* read it from somewhere.
-    http = get_url_html(url, directory="pseudocache")
-    # if in_cache(url):
-    #     http = read_cache(url)
-    # else:
-    #     http = save_to_cache(url) # http.type=str()
+    # get_url_html is a helper function handling HTML retrieval. See function header for information.
+    http = get_url_html(url, directory=cache_directory)
     
     # parse response, get html
     try:
-        return parse_response(http, mode=0)
+        print("Start parsing.")
+        return parse_response(http, parse_mode=parse_mode)
     except Exception as e:
+        print("Start parse FAILURE.", str(e))
         return f'An error occurred: {str(e)}'
 
 # CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
@@ -85,27 +85,33 @@ def get_url_html(url, directory='pseudocache'):
     
     return str(html)
     
+    # Handles complex business logic for different HTML parsing approaches.
     # mode == 0: BS4 parsing
     # mode == 1: Trafilatura parsing
-def parse_response(http, mode):
-    json_article = "{}" ## default empty JSON
+    # Defaults to BS4 parsing.
+def parse_response(html, parse_mode=0):
+    json_default = "{}" ## default empty JSON
     
-    if (mode == 0):
-        soup = BeautifulSoup(http, 'html.parser')
-        result_set = parse_soup(soup)
-        json_article = write_json(result_set)
-    elif (mode == 1):
-        pass
-
-    return json_article
-
-    # Parses soup using Beautiful Soup 4.
-    # Takes a naive approach by just grabing headers and paragraphs.
-    # Returns ResultSet.
-def parse_soup(soup):
+    # minimal parsing:
     tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6',  'p']
-    text = soup.find_all(tags)
-    return text
+    soup = BeautifulSoup(html, 'html.parser')
+    result = soup.find_all(tags)
+    print(type(result))
+    
+    if (parse_mode == 0): #BS4 parsing ... we need to do this at bare minimum.
+        return write_json(result)
+    
+    elif (parse_mode == 1): # Trafilatura parsing
+        print("MODE 1")
+        soup.findAll(text=True)
+        text = extract(html, favor_precision=True)
+        print(text)
+        for item in result:
+            if (item.text not in text):
+                result.remove(item)
+        return write_json(result)
+
+    return json_default
 
     # Builds a JSON object with the format provided in the wiki.
     # Needs a ResultSet for text. The rest can be blank, or strings.
