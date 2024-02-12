@@ -98,14 +98,13 @@ def parse_response(html, parse_mode=0):
     result = soup.find_all(tags)
     print(type(result))
     
-    if (parse_mode == 0): #BS4 parsing ... we need to do this at bare minimum.
+    if (parse_mode == 0): #BS4 parsing ... technically already done above, since we use these results to do our other parsing
         return write_json(result)
     
     elif (parse_mode == 1): # Trafilatura parsing
         print("MODE 1")
         soup.findAll(text=True)
         text = extract(html, favor_precision=True)
-        print(text)
         for item in result:
             if (item.text not in text):
                 result.remove(item)
