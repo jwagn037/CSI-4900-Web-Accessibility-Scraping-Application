@@ -1,17 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, NgClass } from '@angular/common';
+import { Component, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ConfigService } from '../Services/config.service';
 
 @Component({
   selector: 'app-dynamic-article',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,
+  NgClass],
   templateUrl: './dynamic-article.component.html',
   styleUrl: './dynamic-article.component.css'
 })
 
 export class DynamicArticleComponent {
+  @Input() themeClass:string = '';
   htmlJson: any;
   htmlList: Array<[string, string]> = [];
   private urlSubscription: Subscription;

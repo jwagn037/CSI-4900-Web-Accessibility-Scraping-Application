@@ -6,6 +6,113 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light theme */
+.theme-light.primary {
+    /* 14.78:1 */
+    background-color: #cadbdd;
+    color: black;
+}
+
+.theme-light.secondary {
+    /* 19.21 */
+    background-color: #e3f9fb;
+    color: black;
+}
+
+.theme-light.accent {
+    /* 16.82:1 */
+    background-color: #ffffc4;
+    color: black;
+}
+
+.theme-light.highlight {
+    /* 7:08 with #e3f9fb*/
+    /* 7.74:1 with white */
+    background-color: #026100;
+    color: white;
+}
+
+/* Dark theme */
+.theme-dark.primary {
+    /* 17.71:1 */
+    background-color: #1b103c;
+    border-width: 2px;
+    border-color: white;
+    color: white;
+}
+
+.theme-dark.secondary {
+    /* 19.04.80:1 */
+    background-color: #0c1202;
+    border-width: 1px;
+    border-color: white;
+    color:white;
+
+}
+
+.theme-dark.accent {
+    /* 15.46:1 */
+    background-color: #131868;
+    color:white;
+}
+
+.theme-dark.highlight {
+    /* 7.93:1 */
+    background-color: #ff69b4;
+    color:black;
+}
+
+
+/* Accessible theme 1 ...
+https://venngage.com/tools/accessible-color-palette-generator */
+.theme-access1.primary {
+    /* 7.30:1 */
+    background-color: #85a16a;
+    color: black;
+}
+
+.theme-access1.secondary {
+    /* 8.74:1 */
+    background-color: #98aca0;
+    color:black;
+}
+
+.theme-access1.accent {
+    /* 8.96:1 */
+    background-color: #b0ad58;
+    color:black;
+}
+
+.theme-access1.highlight {
+    background-color: #e4eddd;
+    color:black
+}
+
+/* Accessible theme 2 ... http://a11yrocks.com/colorPalette/*/
+.theme-access2.primary { 
+    /* 8.78:1 */
+    background-color: #F19035;
+    color: black;
+}
+
+.theme-access2.secondary {
+    /* 14.91:1 */
+    background-color: #fbd1b8;
+    color:black;
+}
+
+.theme-access2.accent {
+    /* 10.89:1 */
+    background-color: #9bca34;
+    color:black;
+}
+
+.theme-access2.highlight {
+    /* 8.12:1 */
+    background-color: #4e39b6;
+    color:white
+}
+
 @font-face {
     font-family: 'Atkinson Hyperlegible';
     src: url('./assets/Atkinson-Hyperlegible-Regular-102.ttf');

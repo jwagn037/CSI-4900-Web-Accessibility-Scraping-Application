@@ -1,63 +1,72 @@
-<div class="bg-lime-400" id="navbar">
-    <h1 class="text-xl">WASA</h1>
-</div>
 
-<div class="min-h-fit bg-lime-200 px-16">
-    <a id="about"></a>
-    <div class="min-h-fit px-5 pt-5 pb-5">
-        <!-- Information on WASA-->
-        <div class="mb-4 p-4 bg-slate-100 rounded-2xl">
-            <h1 class="text-5xl">Welcome to WASA</h1>
-            <p class="text-xl">The WASA (Web Accessibility Scraping Application) project is an ongoing CSI 4900 honours project at the University of Ottawa for the development of an application intended to parse inaccessible content for users with disabilities, serving up the scraped content in an accessible way for each user's individual needs.</p>
-            <p class="text-xl">Submit the URL of an article you want to read, and we do the rest.</p>
-            <a href="#urlSubmissionField" class="text-3xl bg-yellow-300 hover:underline">Try it.</a>
-        </div>
-
-        <!-- User options -->
-        <div class="bg-slate-100 p-4 rounded-2xl">
-            <h1 class="text-5xl">Options</h1>
-            <h2 class="text-4xl">Themes</h2>
-            <p>Change your theme here. WASA use's your computer's lightness/darkness themes by default.</p>
-            <div class="flex items-center justify-around">
-                <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Option 1</button>
-                <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Option 2</button>
-                <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Option 3</button>
-                <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Option 4</button>
+<html>
+    <div class="accent" [ngClass]="themeClass">
+        <h1 class="text-xl">WASA</h1>
+    </div>
+    
+    <div>
+        <a id="about"></a>
+        <div class="min-h-fit px-5 pt-5 pb-5 primary" [ngClass]="themeClass">
+            <!-- Information on WASA-->
+            <div class="p-4 mb-4 rounded-2xl secondary" [ngClass]="themeClass">
+                <h1 class="text-5xl">Welcome to WASA</h1>
+                <p class="text-xl">The WASA (Web Accessibility Scraping Application) project is an ongoing CSI 4900 honours project at the University of Ottawa for the development of an application intended to parse inaccessible content for users with disabilities, serving up the scraped content in an accessible way for each user's individual needs.</p>
+                <p class="text-xl">Submit the URL of an article you want to read, and we do the rest.</p>
+                <a href="#urlSubmissionField" class="text-3xl hover:underline highlight" [ngClass]="themeClass">Try it.</a>
             </div>
-            <h2 class="text-4xl">Content Options</h2>
-            <p class="text-xl">Select advanced content delivery options here.</p>
-            <div class="flex justify-center space-x-4">
-                <label class="inline-flex items-center me-5 cursor-pointer">
-                  <input type="checkbox" value="" class="sr-only peer" checked>
-                  <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
-                  <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Get images</span>
-                </label>
-
-                <label class="inline-flex items-center me-5 cursor-pointer">
-                  <input type="checkbox" value="" class="sr-only peer" checked>
-                  <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-yellow-300 dark:peer-focus:ring-yellow-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-yellow-400"></div>
-                  <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Generate missing alt-text</span>
-                </label>
-
-                <label class="inline-flex items-center me-5 cursor-pointer">
-                  <input type="checkbox" value="" class="sr-only peer" checked>
-                  <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-500"></div>
-                  <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Give me a summary</span>
-                </label>
+    
+            <!-- User options -->
+            <div class="p-4 rounded-2xl secondary" [ngClass]="themeClass">
+                <h1 class="text-5xl">Options</h1>
+                <h2 class="text-4xl">Themes</h2>
+                <p>Change your theme here. WASA use's your computer's lightness/darkness themes by default.</p>
+                <div class="flex items-center justify-around">
+                    <!-- Dark mode -->
+                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    (click)="setLightTheme()">Seaside</button>
+                    <!-- (click)="darkMode.set(!darkMode())" -->
+                    <!-- Light mode -->
+                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    (click)="setDarkTheme()">Astral</button>
+                    <!-- Lime mode -->
+                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    (click)="setAccess1Theme()">Pickle</button>
+                    <!-- Apricot mode -->
+                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    (click)="setAccess2Theme()">Apricot</button>
+                </div>
+                <h2 class="text-4xl">Content Options</h2>
+                <p class="text-xl">Select advanced content delivery options here.</p>
+                <div class="flex justify-center space-x-4">
+                    <label class="inline-flex items-center me-5 cursor-pointer">
+                      <input type="checkbox" value="" class="sr-only peer" checked>
+                      <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                      <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Get images</span>
+                    </label>
+    
+                    <label class="inline-flex items-center me-5 cursor-pointer">
+                      <input type="checkbox" value="" class="sr-only peer" checked>
+                      <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-yellow-300 dark:peer-focus:ring-yellow-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-yellow-400"></div>
+                      <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Generate missing alt-text</span>
+                    </label>
+    
+                    <label class="inline-flex items-center me-5 cursor-pointer">
+                      <input type="checkbox" value="" class="sr-only peer" checked>
+                      <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-500"></div>
+                      <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Give me a summary</span>
+                    </label>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<div class="min-h-screen bg-lime-300 px-16">
-    <a id="urlSubmissionField"></a>
-    <div class="px-5 pt-5">
-        <!-- URL submission form-->
-        <app-url-submission-form></app-url-submission-form>
-        
+    <div class="min-h-screen px-5 pt-5 pb-5 secondary" [ngClass]="themeClass">
+        <a id="urlSubmissionField"></a>
+        <div class="p-4 mb-4 rounded-2xl accent" [ngClass]="themeClass">
+            <!-- URL submission form-->
+            <app-url-submission-form [themeClass]="themeClass"></app-url-submission-form>
+        </div>
         <!-- dynamic article-->
-        <app-dynamic-article></app-dynamic-article>
+        <app-dynamic-article [themeClass]="themeClass"></app-dynamic-article>
     </div>
-</div>
-
-
+    
+</html>

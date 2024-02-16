@@ -1,17 +1,21 @@
-import { Component} from '@angular/core';
+import { Component, Input} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HandleUrlService } from '../Services/handle-url.service';
 import { ConfigService } from '../Services/config.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-url-submission-form',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule,
+  NgClass],
   templateUrl: './url-submission-form.component.html',
   styleUrl: './url-submission-form.component.css'
 })
 
 export class UrlSubmissionFormComponent {
+  @Input() themeClass:string = '';
+  
   userUrl : string = "";
 
   constructor(private configService: ConfigService) {}
