@@ -1,13 +1,14 @@
-<div class="container">   
+<div class="mt-5">   
     <div *ngFor="let line of htmlList">
         <ng-container [ngSwitch]="getTagName(line[0])">
-            <h1 *ngSwitchCase="'h1'">{{ line[1] }}</h1>
-            <h2 *ngSwitchCase="'h2'">{{ line[1] }}</h2>
-            <h3 *ngSwitchCase="'h3'">{{ line[1] }}</h3>
-            <h4 *ngSwitchCase="'h4'">{{ line[1] }}</h4>
-            <h5 *ngSwitchCase="'h5'">{{ line[1] }}</h5>
-            <h6 *ngSwitchCase="'h6'">{{ line[1] }}</h6>
-            <p *ngSwitchDefault>{{ line[1] }}</p>
+            <h1 class="text-5xl mb-2" *ngSwitchCase="'h1'">{{ line[1] }}</h1>
+            <h2 class="text-3xl mb-2" *ngSwitchCase="'h2'">{{ line[1] }}</h2>
+            <h3 class="text-2xl mb-2" *ngSwitchCase="'h3'">{{ line[1] }}</h3>
+            <h4 class="text-xl mb-3" *ngSwitchCase="'h4'">{{ line[1] }}</h4>
+            <h5 class="text-xl mb-3" *ngSwitchCase="'h5'">{{ line[1] }}</h5>
+            <h6 class="text-xl mb-3" *ngSwitchCase="'h6'">{{ line[1] }}</h6>
+            <p class="text-xl leading-loose mb-4 hover:underline underline-offset-8"*ngSwitchDefault>{{ line[1] }}</p>
         </ng-container>
     </div>
+    <a href="#urlSubmissionField" class="text-3xl bg-yellow-300 hover:underline">Return to tool.</a>
 </div>

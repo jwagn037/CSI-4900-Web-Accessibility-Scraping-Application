@@ -1,7 +1,7 @@
 
-<div class="p-5 bg-lime-200">
-  <h1 class="">Your URL</h1>
-  <label class="" for="urlSubmissionField">Enter the URL of an inaccessible webpage below. We will turn it into something you can read!</label>
-  <input class="" type="url" placeholder="Enter URL" [(ngModel)] = "userUrl" id="urlSubmissionField">
-  <button class="" (click)="OnSubmitUrl()">Submit</button>
+<div class="bg-slate-200 border-2 border-black p-2">
+  <h1>Your URL</h1>
+  <label for="urlSubmissionField">Enter the URL of an inaccessible webpage below. We will turn it into something you can read!</label>
+  <input type="url" placeholder="Enter URL" [(ngModel)] = "userUrl" id="urlSubmissionField">
+  <button (click)="OnSubmitUrl()">Submit</button>
 </div>
