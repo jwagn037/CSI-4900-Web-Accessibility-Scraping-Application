@@ -13,6 +13,18 @@
     color: black;
 }
 
+#light-btn {
+    background-color: #cadbdd;
+    color: black;
+    border-radius: 0.25rem;
+    border: 2px solid black;
+}
+#light-btn:hover {
+    background-color: #026100;
+    color: black;
+    border: 2px solid black;
+}
+
 .theme-light.secondary {
     /* 19.21 */
     background-color: #e3f9fb;
@@ -39,6 +51,18 @@
     border-width: 2px;
     border-color: white;
     color: white;
+}
+
+#dark-btn {
+    background-color: #1b103c;
+    color: white;
+    border-radius: 0.25rem;
+    border: 2px solid black;
+}
+#dark-btn:hover {
+    background-color: #131868;
+    color: white;
+    border: 2px solid black;
 }
 
 .theme-dark.secondary {
@@ -71,6 +95,18 @@ https://venngage.com/tools/accessible-color-palette-generator */
     color: black;
 }
 
+#access1-btn {
+    background-color: #85a16a;
+    color: black;
+    border-radius: 0.25rem;
+    border: 2px solid black;
+}
+#access1-btn:hover {
+    background-color: #b0ad58;
+    color: black;
+    border: 2px solid black;
+}
+
 .theme-access1.secondary {
     /* 8.74:1 */
     background-color: #98aca0;
@@ -93,6 +129,18 @@ https://venngage.com/tools/accessible-color-palette-generator */
     /* 8.78:1 */
     background-color: #F19035;
     color: black;
+}
+
+#access2-btn {
+    background-color: #F19035;
+    color: black;
+    border-radius: 0.25rem;
+    border: 2px solid black;
+}
+#access2-btn:hover {
+    background-color: #9bca34;
+    color: black;
+    border: 2px solid black;
 }
 
 .theme-access2.secondary {

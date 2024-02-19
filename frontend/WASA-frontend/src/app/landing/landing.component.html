@@ -21,19 +21,18 @@
                 <h2 class="text-4xl">Themes</h2>
                 <p class="text-xl">Use the buttons below to change your theme. We will do our best to remember it for next time. If you already have a theme set on your device, we use that first.</p>
                 <div class="mt-5 mb-5 flex items-center justify-around">
-                    <!-- Dark mode -->
+                    <!-- Light mode selector -->
+                    <button class="font-semibold py-2 px-4 rounded"
+                    (click)="setLightTheme()" id="light-btn">Seaside</button>
+                    <!-- Dark mode selector -->
+                    <button class="font-semibold py-2 px-4 rounded"
+                    (click)="setDarkTheme()" id="dark-btn">Astral</button>
+                    <!-- Lime mode selector -->
                     <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    (click)="setLightTheme()">Seaside</button>
-                    <!-- (click)="darkMode.set(!darkMode())" -->
-                    <!-- Light mode -->
+                    (click)="setAccess1Theme()" id="access1-btn">Pickle</button>
+                    <!-- Apricot mode selector -->
                     <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    (click)="setDarkTheme()">Astral</button>
-                    <!-- Lime mode -->
-                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    (click)="setAccess1Theme()">Pickle</button>
-                    <!-- Apricot mode -->
-                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    (click)="setAccess2Theme()">Apricot</button>
+                    (click)="setAccess2Theme()" id="access2-btn">Apricot</button>
                 </div>
                 <h2 class="text-4xl">Content Options</h2>
                 <p class="text-xl">Select advanced content delivery options here.</p>
