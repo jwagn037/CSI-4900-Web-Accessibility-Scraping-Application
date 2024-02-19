@@ -14,7 +14,7 @@ import { NgClass } from '@angular/common';
 })
 
 export class UrlSubmissionFormComponent {
-  @Input() themeClass:string = ''; // from landing component
+  @Input() themeClass:string = '';
   
   userUrl : string = "";
 
