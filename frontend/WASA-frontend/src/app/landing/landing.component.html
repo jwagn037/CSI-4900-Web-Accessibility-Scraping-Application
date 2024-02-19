@@ -1,6 +1,6 @@
 
 <html>
-    <div class="accent" [ngClass]="themeClass">
+    <div class="shadow-md accent" [ngClass]="themeClass">
         <h1 class="text-9xl">WASA</h1>
     </div>
     
@@ -8,7 +8,7 @@
         <a id="about"></a>
         <div class="min-h-fit px-5 pt-5 pb-5 primary flex justify-center items-center flex-col" [ngClass]="themeClass">
             <!-- Information on WASA-->
-            <div class="p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
+            <div class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
                 <h1 class="text-6xl">Welcome to WASA</h1>
                 <p class="text-xl">The WASA (Web Accessibility Scraping Application) project is an ongoing CSI 4900 honours project at the University of Ottawa for the development of an application intended to parse inaccessible content for users with disabilities, serving up the scraped content in an accessible way for each user's individual needs.</p>
                 <p class="text-xl">Submit the URL of an article you want to read, and we do the rest.</p>
@@ -16,7 +16,7 @@
             </div>
     
             <!-- User options -->
-            <div class="p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
+            <div class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
                 <h1 class="text-6xl">Options</h1>
                 <h2 class="text-4xl">Themes</h2>
                 <p class="text-xl">Use the buttons below to change your theme. We will do our best to remember it for next time. If you already have a theme set on your device, we use that first.</p>
@@ -60,7 +60,7 @@
     </div>
     <div class="min-h-screen px-5 pt-5 pb-5 secondary" [ngClass]="themeClass">
         <a id="urlSubmissionField"></a>
-        <div class="p-4 mb-4 rounded-2xl accent" [ngClass]="themeClass">
+        <div class="shadow-xl p-4 mb-4 rounded-2xl accent" [ngClass]="themeClass">
             <!-- URL submission form-->
             <app-url-submission-form [themeClass]="themeClass"></app-url-submission-form>
         </div>
