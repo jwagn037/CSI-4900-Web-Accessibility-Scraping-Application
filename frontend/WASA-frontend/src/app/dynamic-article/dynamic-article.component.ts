@@ -13,7 +13,7 @@ import { ConfigService } from '../Services/config.service';
 })
 
 export class DynamicArticleComponent {
-  @Input() themeClass:string = '';
+  @Input() themeClass:string = ''; // from landing component
   htmlJson: any;
   htmlList: Array<[string, string]> = [];
   private urlSubscription: Subscription;
