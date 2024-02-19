@@ -18,26 +18,33 @@ export class LandingComponent {
   themeClass: string = "theme-light" // UrlSubmissionForm, DynamicArticleComponent take this as an input to use in their HTML
 
   setLightTheme() {
-    this.themeClass = "theme-light"
+    this.themeClass = "theme-light";
+    localStorage.setItem('theme-setting','theme-light');
   }
 
   setDarkTheme() {
-    this.themeClass = "theme-dark"
+    this.themeClass = "theme-dark";
+    localStorage.setItem('theme-setting','theme-dark');
   }
 
   setAccess1Theme() {
-    this.themeClass = "theme-access1"
+    this.themeClass = "theme-access1";
+    localStorage.setItem('theme-setting','theme-access1');
   }
 
   setAccess2Theme() {
-    this.themeClass = "theme-access2"
+    this.themeClass = "theme-access2";
+    localStorage.setItem('theme-setting','theme-access2');
   }
 
   ngOnInit() {
     const darkMode = window.matchMedia("(prefers-color-scheme: dark)");
     const lightMode = window.matchMedia("(prefers-color-scheme: light)");
-    
-    if (darkMode['matches']) {
+    const savedThemeSetting = localStorage.getItem('theme-setting');
+
+    if (!Object.is(null,savedThemeSetting)) {
+      this.themeClass = String(savedThemeSetting);
+    } else if (darkMode['matches']) {
       this.themeClass = "theme-dark";
     } else if (lightMode['matches']) {
       this.themeClass = "theme-light";
