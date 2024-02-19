@@ -1,4 +1,5 @@
 <div class="mt-5">   
+    <hr class="mb-5">
     <div *ngFor="let line of htmlList">
         <ng-container [ngSwitch]="getTagName(line[0])">
             <h1 class="text-5xl mb-2" *ngSwitchCase="'h1'">{{ line[1] }}</h1>
@@ -10,5 +11,8 @@
             <p class="text-xl leading-loose mb-4 hover:underline underline-offset-8"*ngSwitchDefault>{{ line[1] }}</p>
         </ng-container>
     </div>
-    <a *ngIf="this.htmlList.length>0" href="#urlSubmissionField" class="text-3xl hover:underline underline-offset-6 highlight" [ngClass]="themeClass">Return to tool.</a>
+    <div *ngIf="this.htmlList.length>0">
+        <hr class="mt-5 mb-5">
+        <a href="#urlSubmissionField" class="text-3xl mt-8 hover:underline underline-offset-6 highlight" [ngClass]="themeClass">Return to tool.</a>    
+    </div>
 </div>
