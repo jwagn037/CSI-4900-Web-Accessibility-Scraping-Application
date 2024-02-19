@@ -29,7 +29,6 @@ export class ConfigService {
   // This service can be subscribed to to get the saved JSON each time it updates.
   // Used by DynamicArticle to
   getArticleJson(): Observable<any> {
-    console.log("getArticleJson:", this.json)
     return this.json.asObservable();
   }
 }

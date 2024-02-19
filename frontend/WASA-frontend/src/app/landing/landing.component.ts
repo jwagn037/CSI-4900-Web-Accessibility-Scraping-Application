@@ -15,7 +15,7 @@ import { NgClass } from '@angular/common';
   styleUrl: './landing.component.css'
 })
 export class LandingComponent {
-  themeClass: string = "theme-light" // UrlSubmissionForm, DynamicArticleComponent take these as an input to use in their HTML
+  themeClass: string = "theme-light" // UrlSubmissionForm, DynamicArticleComponent take this as an input to use in their HTML
 
   setLightTheme() {
     this.themeClass = "theme-light"
