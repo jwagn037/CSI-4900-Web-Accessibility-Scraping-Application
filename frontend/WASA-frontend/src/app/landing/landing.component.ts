@@ -33,4 +33,17 @@ export class LandingComponent {
     this.themeClass = "theme-access2"
   }
 
+  ngOnInit() {
+    const darkMode = window.matchMedia("(prefers-color-scheme: dark)");
+    const lightMode = window.matchMedia("(prefers-color-scheme: light)");
+    
+    if (darkMode['matches']) {
+      this.themeClass = "theme-dark";
+    } else if (lightMode['matches']) {
+      this.themeClass = "theme-light";
+    } else {
+      this.themeClass = "theme-light";
+    }
+  }
+
 }
