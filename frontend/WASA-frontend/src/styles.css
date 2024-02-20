@@ -13,13 +13,13 @@
     color: black;
 }
 
-#light-btn {
+.light-btn {
     background-color: #cadbdd;
     color: black;
     border-radius: 0.25rem;
     border: 2px solid black;
 }
-#light-btn:hover {
+.light-btn:hover {
     background-color: #026100;
     color: black;
     border: 2px solid black;
@@ -53,14 +53,14 @@
     color: white;
 }
 
-#dark-btn {
+.dark-btn {
     background-color: #1b103c;
     color: white;
     border-radius: 0.25rem;
     border: 2px solid black;
 }
-#dark-btn:hover {
-    background-color: #131868;
+.dark-btn:hover {
+    background-color: #ff69b4;
     color: white;
     border: 2px solid black;
 }
@@ -95,14 +95,14 @@ https://venngage.com/tools/accessible-color-palette-generator */
     color: black;
 }
 
-#access1-btn {
+.access1-btn {
     background-color: #85a16a;
     color: black;
     border-radius: 0.25rem;
     border: 2px solid black;
 }
-#access1-btn:hover {
-    background-color: #b0ad58;
+.access1-btn:hover {
+    background-color: #e4eddd;
     color: black;
     border: 2px solid black;
 }
@@ -131,14 +131,14 @@ https://venngage.com/tools/accessible-color-palette-generator */
     color: black;
 }
 
-#access2-btn {
+.access2-btn {
     background-color: #F19035;
     color: black;
     border-radius: 0.25rem;
     border: 2px solid black;
 }
-#access2-btn:hover {
-    background-color: #9bca34;
+.access2-btn:hover {
+    background-color: #4e39b6;
     color: black;
     border: 2px solid black;
 }

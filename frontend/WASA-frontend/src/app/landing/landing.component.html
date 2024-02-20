@@ -9,33 +9,33 @@
         <div class="min-h-fit px-5 pt-5 pb-5 primary flex justify-center items-center flex-col" [ngClass]="themeClass">
             <!-- Information on WASA-->
             <div class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
-                <h1 class="text-6xl">Welcome to WASA</h1>
-                <p class="text-xl">The WASA (Web Accessibility Scraping Application) project is an ongoing CSI 4900 honours project at the University of Ottawa for the development of an application intended to parse inaccessible content for users with disabilities, serving up the scraped content in an accessible way for each user's individual needs.</p>
-                <p class="text-xl">Submit the URL of an article you want to read, and we do the rest.</p>
+                <h1 class="text-6xl mb-2">Welcome to WASA</h1>
+                <p class="text-2xl mb-2">The WASA (Web Accessibility Scraping Application) project is an ongoing CSI 4900 honours project at the University of Ottawa for the development of an application intended to parse inaccessible content for users with disabilities, serving up the scraped content in an accessible way for each user's individual needs.</p>
+                <p class="text-2xl mb-2">Submit the URL of an article you want to read, and we do the rest.</p>
                 <a href="#urlSubmissionField" class="text-3xl hover:underline underline-offset-8 highlight" [ngClass]="themeClass">Try it.</a>
             </div>
     
             <!-- User options -->
             <div class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
-                <h1 class="text-6xl">Options</h1>
+                <h1 class="text-6xl mb-2">Options</h1>
                 <h2 class="text-4xl">Themes</h2>
-                <p class="text-xl">Use the buttons below to change your theme. We will do our best to remember it for next time. If you already have a theme set on your device, we use that first.</p>
+                <p class="text-2xl">Use the buttons below to change your theme. We will do our best to remember it for next time. If you already have a theme set on your device, we use that first.</p>
                 <div class="grid grid-cols-2 gap-2 mt-5 mb-5">
                     <!-- Light mode selector -->
-                    <button class="text-2xl font-semibold py-2 px-4 rounded"
-                    (click)="setLightTheme()" id="light-btn">Seaside</button>
+                    <button class="text-2xl font-semibold py-2 px-4 rounded light-btn"
+                    (click)="setLightTheme()">Seaside</button>
                     <!-- Dark mode selector -->
-                    <button class="text-2xl font-semibold py-2 px-4 rounded"
-                    (click)="setDarkTheme()" id="dark-btn">Astral</button>
+                    <button class="text-2xl font-semibold py-2 px-4 rounded dark-btn"
+                    (click)="setDarkTheme()">Astral</button>
                     <!-- Lime mode selector -->
-                    <button class="text-2xl bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    (click)="setAccess1Theme()" id="access1-btn">Pickle</button>
+                    <button class="text-2xl font-semibold py-2 px-4 rounded access1-btn"
+                    (click)="setAccess1Theme()">Pickle</button>
                     <!-- Apricot mode selector -->
-                    <button class="text-2xl bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    (click)="setAccess2Theme()" id="access2-btn">Apricot</button>
+                    <button class="text-2xl font-semibold py-2 px-4 rounded access2-btn"
+                    (click)="setAccess2Theme()">Apricot</button>
                 </div>
                 <h2 class="text-4xl">Content Options</h2>
-                <p class="text-xl">Select advanced content delivery options here.</p>
+                <p class="text-2xl mb-2">Select advanced content delivery options here.</p>
                 <div class="flex justify-center space-x-4">
                     <label class="inline-flex items-center me-5 cursor-pointer">
                       <input type="checkbox" value="" class="sr-only peer" checked>
@@ -58,14 +58,18 @@
             </div>
         </div>
     </div>
-    <div class="min-h-screen px-5 pt-5 pb-5 secondary" [ngClass]="themeClass">
+    <div class="min-h-screen px-5 pt-5 pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
         <a id="urlSubmissionField"></a>
-        <div class="shadow-xl p-4 mb-4 rounded-2xl accent" [ngClass]="themeClass">
+        <div class="shadow-xl max-w-7xl p-4 mb-4 rounded-2xl accent" [ngClass]="themeClass">
             <!-- URL submission form-->
-            <app-url-submission-form [themeClass]="themeClass"></app-url-submission-form>
+            <app-url-submission-form [themeClass]="themeClass" [btnTheme]="btnTheme"></app-url-submission-form>
         </div>
-        <!-- dynamic article-->
-        <app-dynamic-article [themeClass]="themeClass"></app-dynamic-article>
+
+        <div class="max-w-6xl" [ngClass]="themeClass">
+            <!-- dynamic article-->
+            <app-dynamic-article [themeClass]="themeClass"></app-dynamic-article>
+        </div>
+
     </div>
     
 </html>
