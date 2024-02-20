@@ -6,6 +6,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Scroll smoothing */
+html {
+	scroll-behavior: smooth;
+}
+/* Disabled smooth scrolling for users who request it */
+@media screen and (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
 /* Light theme */
 .theme-light.primary {
     /* 14.78:1 */
