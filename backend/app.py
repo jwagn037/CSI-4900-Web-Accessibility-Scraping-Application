@@ -93,7 +93,7 @@ def parse_response(html, parse_mode=0):
     json_default = "{}" ## default empty JSON
     
     # minimal parsing:
-    tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6',  'p']
+    tags = ['h1','h2','h3','h4','h5','h6', 'p', 'ul']
     soup = BeautifulSoup(html, 'html.parser')
     result = soup.find_all(tags)
     print(type(result))
