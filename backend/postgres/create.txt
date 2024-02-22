@@ -1,0 +1,46 @@
+CREATE TABLE webpage_json(
+	webpage_id SERIAL PRIMARY KEY,
+	title VARCHAR(255) NOT NULL,
+	author VARCHAR(255) NOT NULL,
+	publish_date VARCHAR(24) NOT NULL,
+	cached_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE webpage_src(
+	webpage_src_id SERIAL PRIMARY KEY,
+	webpage_id INT UNIQUE NOT NULL,
+	webpage_url VARCHAR(500) NOT NULL,
+	FOREIGN KEY (webpage_id) REFERENCES webpage_json(webpage_id)
+);
+
+CREATE TABLE request_record(
+	request_record_id SERIAL PRIMARY KEY,
+	webpage_src_id INT NOT NULL,
+	time_requested TIMESTAMP NOT NULL,
+	FOREIGN KEY (webpage_src_id) REFERENCES webpage_src(webpage_src_id)
+);
+
+CREATE TABLE element(
+	element_id SERIAL PRIMARY KEY,
+	webpage_id INT NOT NULL,
+	element_index INT NOT NULL,
+	FOREIGN KEY (webpage_id) REFERENCES webpage_json(webpage_id)
+);
+
+CREATE TABLE text_element(
+	text_element_id SERIAL PRIMARY KEY,
+	element_id int UNIQUE NOT NULL,
+	element_type VARCHAR(20) NOT NULL,
+	element_data TEXT NOT NULL,
+	FOREIGN KEY (element_id) REFERENCES element(element_id)
+);
+
+CREATE TABLE image_element(
+	image_element_id SERIAL PRIMARY KEY,
+	element_id INT UNIQUE NOT NULL,
+	caption TEXT NOT NULL,
+	alt_text TEXT NOT NULL,
+	alt_text_type VARCHAR(20) NOT NULL,
+	element_data TEXT NOT NULL,
+	FOREIGN KEY (element_id) REFERENCES element(element_id)
+);
