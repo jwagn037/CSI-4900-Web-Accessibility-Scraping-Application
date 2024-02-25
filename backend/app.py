@@ -7,6 +7,7 @@ import validators
 import hashlib
 import os
 
+
 ################################### FLASK ###################################
 
 app = Flask(__name__)
@@ -129,3 +130,4 @@ def write_json(text, title='',author='',date=''):
         
     json_article['content'] = content
     return json_article
+
