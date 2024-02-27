@@ -1,5 +1,7 @@
 ################################### IMPORTS ###################################
-from flask import Flask, request
+from flask import Flask, request, g
+import psycopg2 # Docs: https://www.psycopg.org/docs/usage.html
+import wasa_db_handler
 import requests
 from bs4 import BeautifulSoup
 from trafilatura import extract
@@ -10,7 +12,36 @@ import os
 
 ################################### FLASK ###################################
 
+# Connect to WASA_DB
+
+
+# Open a cursor to perform database operations
+
+# https://stackoverflow.com/questions/48021238/how-to-use-after-request-in-flask-to-close-database-connection-and-python
+# info for global database connection handling...
+
+
+
 app = Flask(__name__)
+
+@app.before_request
+def before_request():
+    conn = psycopg2.connect(
+         host="localhost",
+         database="WASA_DB",
+         user='WASA_admin',
+         password='admin')
+    g.cur = conn.cursor()
+    g.db = conn
+   
+@app.after_request
+def after_request(response):
+    if g.db is not None:
+        print('closing connection')
+        g.db.commit()
+        g.cur.close()
+        g.db.close()
+    return response
 
 @app.get('/') # index root
 def index():
@@ -20,7 +51,6 @@ def index():
 def scrape_url():
     # API mode options.
     parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
-    cache_directory = "pseudocache"
     
     # Check for valid request
     if request.method != 'GET':
@@ -34,16 +64,36 @@ def scrape_url():
     if (validators.url(url) == False):
         return "Invalid URL"
     
-    # get_url_html is a helper function handling HTML retrieval. See function header for information.
-    http = get_url_html(url, directory=cache_directory)
+    # Try to read from cache
+    cache_json = wasa_db_handler.read_cache_request(url)
     
-    # parse response, get html
-    try:
-        print("Start parsing.")
-        return parse_response(http, parse_mode=parse_mode)
-    except Exception as e:
-        print("Start parse FAILURE.", str(e))
-        return f'An error occurred: {str(e)}'
+    if (cache_json == False):
+        print("Read FAILURE: ", url)
+    
+        # Can't read from cache. Make request.
+        print("Requesting HTML:", url)
+        response = requests.get(url)
+        html = response.text
+        
+        if response.status_code == 200:
+            print("Parsing HTML:",url)
+            response_json = parse_response(html, parse_mode)
+            print("Saving JSON:",url)
+            wasa_db_handler.write_cache_request(url, response_json)
+        else:
+            print("Save FAILURE: Invalid status_code:", response.status_code)
+        
+        return response_json
+    
+    return cache_json
+    
+    # # parse response, get html
+    # try:
+    #     print("Start parsing.")
+    #     return parse_response(http, parse_mode=parse_mode)
+    # except Exception as e:
+    #     print("Start parse FAILURE.", str(e))
+    #     return f'An error occurred: {str(e)}'
 
 # CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
 @app.after_request
@@ -54,37 +104,6 @@ def after_request(response):
     return response
 
 ################################### FUNCTIONS ###################################
-
-# Handles the complex business logic of getting HTML from a URL.
-# Returns HTML. Variable html.type()=str().
-def get_url_html(url, directory='pseudocache'):
-    os.makedirs(directory, exist_ok=True)  # Create the directory if it doesn't exist
-    html_path = os.path.join(directory, hashlib.sha256(url.encode()).hexdigest()) # this is where we will read/save in the cache
-    
-    # Try to read from cache
-    try:
-        with open(html_path, 'r', encoding='utf-8') as file:
-            print("Reading:", html_path)
-            http = file.read()
-            print("Read success:", html_path)
-            return str(http)
-    except Exception as e:
-        print("Read FAILURE:", html_path)
-    
-    # Can't read from cache. Make request.
-    print("Request:", url)
-    response = requests.get(url)
-    html = response.text
-    
-    if response.status_code == 200:
-        with open(html_path, mode='w', encoding='utf-8') as localfile:
-            print("Saving:", html_path)
-            localfile.write(html)
-            print("Save success:", html_path)
-    else:
-        print("Save FAILURE: Invalid status_code:", response.status_code)
-    
-    return str(html)
     
     # Handles complex business logic for different HTML parsing approaches.
     # mode == 0: BS4 parsing
@@ -118,8 +137,8 @@ def parse_response(html, parse_mode=0):
 def write_json(text, title='',author='',date=''):
     json_article = {}
     json_article['title'] = title
-    json_article['author'] = title
-    json_article['date'] = title
+    json_article['author'] = author
+    json_article['date'] = date
     content = []
     
     for item in text:

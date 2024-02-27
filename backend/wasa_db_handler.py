@@ -1,23 +1,5 @@
-import psycopg2 # Docs: https://www.psycopg.org/docs/usage.html
+from flask import g
 from datetime import datetime, timezone
-
-# Connect to WASA_DB
-conn = psycopg2.connect(
-        host="localhost",
-        database="WASA_DB",
-        user='WASA_admin',
-        password='admin')
-
-# Open a cursor to perform database operations
-cur = conn.cursor()
-
-conn.commit()
-
-cur.close()
-conn.close()
-
-# https://stackoverflow.com/questions/48021238/how-to-use-after-request-in-flask-to-close-database-connection-and-python
-# info for global database connection handling...
 
 #####################################################################################################################
 ################################################## HELPER METHODS ###################################################
@@ -33,10 +15,10 @@ def _current_timestamp():
 # Searches webpage_src for a particular URL.
 # Returns the webpage_json_id of a requested webpage, or False if it is not indexed.
 # If it is not indexed, then its JSON isn't in the database.
-def _get_webpage_id(url, cur=cur):
+def _get_webpage_id(url):
     try:
-        cur.execute('SELECT webpage_id FROM webpage_src WHERE webpage_url=(%s);', (url,))
-        webpage_json_id = cur.fetchone()[0]
+        g.cur.execute('SELECT webpage_id FROM webpage_src WHERE webpage_url=(%s);', (url,))
+        webpage_json_id = g.cur.fetchone()[0]
         return webpage_json_id
     except Exception as e:
         # The webpage isn't cached, or the DB failed for some reason
@@ -47,10 +29,10 @@ def _get_webpage_id(url, cur=cur):
 # Returns webpage_id if it does exist, and False if it does not.
 # If it does not exist in webpage_json, it could still exist in webpage_src. This would mean
 # the webpage was cached at some point and there was a "shallow" deletion on the JSON data.
-def _webpage_json_exists(webpage_json_id, cur=cur):
+def _webpage_json_exists(webpage_json_id):
     try:
-        cur.execute('SELECT * FROM webpage_json WHERE webpage_id=(%s)', (webpage_json_id,))
-        webpage_json_id = cur.fetchone()[0]
+        g.cur.execute('SELECT * FROM webpage_json WHERE webpage_id=(%s)', (webpage_json_id,))
+        webpage_json_id = g.cur.fetchone()[0]
         return webpage_json_id
     except Exception as e:
         # The webpage isn't cached, or the DB failed for some reason
@@ -80,43 +62,43 @@ def _webpage_ever_cached(url):
 #####################################################################################################################
 
 # Inserts a row to webpage_json and returns webpage_ID
-def _insert_webpage_json(title, author, publish_date, timestamp, cur=cur):
-    cur.execute('INSERT INTO webpage_json (title, author, publish_date, cached_at) '
+def _insert_webpage_json(title, author, publish_date, timestamp):
+    g.cur.execute('INSERT INTO webpage_json (title, author, publish_date, cached_at) '
                 'VALUES (%s, %s, %s, %s) RETURNING webpage_id',
                 (title, author, publish_date, timestamp))
-    inserted_id = cur.fetchone()[0]
+    inserted_id = g.cur.fetchone()[0]
     return inserted_id
 
 # Inserts a row to webpage_src and returns webpage_src_id
-def _insert_webpage_src(url, webpage_json_id, cur=cur):
-    cur.execute('INSERT INTO webpage_src (webpage_id, webpage_url) '
+def _insert_webpage_src(url, webpage_json_id):
+    g.cur.execute('INSERT INTO webpage_src (webpage_id, webpage_url) '
                 'VALUES (%s, %s) RETURNING webpage_id',
                 (webpage_json_id,url))
-    inserted_id = cur.fetchone()[0]
+    inserted_id = g.cur.fetchone()[0]
     return inserted_id
 
 # Inserts a row to element and returns element_id
-def _insert_element(webpage_id, element_index, cur=cur):
-    cur.execute('INSERT INTO element (webpage_id, element_index) '
+def _insert_element(webpage_id, element_index):
+    g.cur.execute('INSERT INTO element (webpage_id, element_index) '
                 'VALUES (%s, %s) RETURNING element_id',
                 (webpage_id, element_index))
-    inserted_id = cur.fetchone()[0]
+    inserted_id = g.cur.fetchone()[0]
     return inserted_id
 
 # Inserts a row to text_element and returns element_id
 # Inserts a row to element and returns element_id
-def _insert_text_element(element_id, element_type, element_data, cur=cur):
-    cur.execute('INSERT INTO text_element (element_id, element_type, element_data) '
+def _insert_text_element(element_id, element_type, element_data):
+    g.cur.execute('INSERT INTO text_element (element_id, element_type, element_data) '
                 'VALUES (%s, %s, %s) RETURNING element_id',
                 (element_id, element_type, element_data))
-    inserted_id = cur.fetchone()[0]  
+    inserted_id = g.cur.fetchone()[0]  
     return inserted_id
 
 #####################################################################################################################
 ################################################ SELECT OPERATIONS ##################################################
 #####################################################################################################################
 def _get_text_elements(url):
-    cur.execute("""
+    g.cur.execute("""
         SELECT e.element_index, te.element_type, te.element_data
         FROM webpage_src ws
         JOIN webpage_json wj ON ws.webpage_id = wj.webpage_id
@@ -124,11 +106,11 @@ def _get_text_elements(url):
         JOIN text_element te ON te.element_id = e.element_id
         WHERE ws.webpage_url = %s;
     """, (url,))
-    result = cur.fetchall()
+    result = g.cur.fetchall()
     return result
 
 def _get_image_elements(url):
-    cur.execute("""
+    g.cur.execute("""
         SELECT e.element_id, ie.caption, ie.alt_text, ie.alt_text_type, ie.element_data
         FROM webpage_src ws
         JOIN webpage_json wj ON ws.webpage_id = wj.webpage_id
@@ -136,17 +118,17 @@ def _get_image_elements(url):
         JOIN image_element ie ON ie.element_id = e.element_id
         WHERE ws.webpage_url = %s;
     """, (url,))
-    result = cur.fetchall()
+    result = g.cur.fetchall()
     return result
 
 def _get_webpage_info(url):
-    cur.execute("""
+    g.cur.execute("""
         SELECT wj.title, wj.author, wj.publish_date, wj.cached_at
         FROM webpage_src ws
         JOIN webpage_json wj ON ws.webpage_id = wj.webpage_id
         WHERE ws.webpage_url = %s;
     """, (url,))
-    result = cur.fetchone()
+    result = g.cur.fetchone()
     return result
 
 
@@ -175,12 +157,12 @@ def _create_json_cache(url, json, new_src_index):
             continue
         
         item_type = item['type']
-        element_id = _insert_element(webpage_json_id,index,cur)
+        element_id = _insert_element(webpage_json_id,index)
         if (item['type'] == 'img'):
             print("image element")
         else:
             element_data=item['text'].strip()
-            text_element_id = _insert_text_element(element_id,item_type,element_data,cur)
+            text_element_id = _insert_text_element(element_id,item_type,element_data)
         index += 1
     
     return webpage_json_id
@@ -191,7 +173,7 @@ def _create_json_cache(url, json, new_src_index):
 def _shallow_delete_json_cache(url):
     webpage_id = _get_webpage_id(url)
     try:
-        cur.execute('DELETE FROM webpage_json WHERE webpage_id = (%s);', (webpage_id,))
+        g.cur.execute('DELETE FROM webpage_json WHERE webpage_id = (%s);', (webpage_id,))
         return True
     except Exception as e:
         print("Could not delete article from WASA_DB: ", e)
@@ -207,7 +189,7 @@ def _deep_delete_json_cache(url):
         _shallow_delete_json_cache(url)
     
     try:
-        cur.execute('DELETE FROM webpage_src WHERE webpage_url = (%s);', (url,))
+        g.cur.execute('DELETE FROM webpage_src WHERE webpage_url = (%s);', (url,))
         return True
     except Exception as e:
         print("Could not delete article from WASA_DB: ", e)
@@ -217,7 +199,7 @@ def _deep_delete_json_cache(url):
 # Clear ALL of the data in the database.
 def _total_wipe():
     try:
-        cur.execute('TRUNCATE TABLE webpage_json CASCADE;')
+        g.cur.execute('TRUNCATE TABLE webpage_json CASCADE;')
         return True
     except Exception as e:
         print("Could not wipe WASA_DB:", e)
@@ -226,7 +208,7 @@ def _total_wipe():
 # Updates the entry in webpage_src contain
 def _update_webpage_src(url, new_webpage_id):
     try:
-        cur.execute('UPDATE webpage_src SET webpage_id=(%s) WHERE webpage_url=(%s);', (new_webpage_id,url))
+        g.cur.execute('UPDATE webpage_src SET webpage_id=(%s) WHERE webpage_url=(%s);', (new_webpage_id,url))
         return True
     except Exception as e:
         print("Could not update webpage_src for url:", url, e)
@@ -242,9 +224,9 @@ def _update_webpage_src(url, new_webpage_id):
 
 # Attempts to read from the databse. Returns webpage JSON on success, or False an a failure.
 # READ operation: given a url, read a webpage from the DB.
-def read_cache_request(url, cur=cur):
+def read_cache_request(url):
     # Premature exit if the page isn't cached
-    in_cache = _get_webpage_id(url, cur=cur)
+    in_cache = _get_webpage_id(url)
     if (in_cache == False):
         return False
     
