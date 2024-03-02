@@ -6,26 +6,16 @@ import requests
 from bs4 import BeautifulSoup
 from trafilatura import extract
 import validators
-import hashlib
-import os
+import domain_parser
 
 
 ################################### FLASK ###################################
 
-# Connect to WASA_DB
-
-
-# Open a cursor to perform database operations
-
-# https://stackoverflow.com/questions/48021238/how-to-use-after-request-in-flask-to-close-database-connection-and-python
-# info for global database connection handling...
-
-
-
 app = Flask(__name__)
 
-@app.before_request
+@app.before_request 
 def before_request():
+    # Connect to the database:
     conn = psycopg2.connect(
          host="localhost",
          database="WASA_DB",
@@ -33,9 +23,14 @@ def before_request():
          password='admin')
     g.cur = conn.cursor()
     g.db = conn
+    # Build our adserver, allowlist, blocklist dictionaries:
+    adserver_dict = domain_parser.get_domain_dict("adservers")
+    blocklist_dict = domain_parser.get_domain_dict("blocklist")
+    allowlist_dict = domain_parser.get_domain_dict("allowlist")
    
 @app.after_request
 def after_request(response):
+    # Close the database connection
     if g.db is not None:
         print('closing connection')
         g.db.commit()
@@ -87,14 +82,6 @@ def scrape_url():
     
     return cache_json
     
-    # # parse response, get html
-    # try:
-    #     print("Start parsing.")
-    #     return parse_response(http, parse_mode=parse_mode)
-    # except Exception as e:
-    #     print("Start parse FAILURE.", str(e))
-    #     return f'An error occurred: {str(e)}'
-
 # CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
 @app.after_request
 def after_request(response):
@@ -149,4 +136,3 @@ def write_json(text, title='',author='',date=''):
         
     json_article['content'] = content
     return json_article
-

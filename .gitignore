@@ -18,6 +18,11 @@ backend/pseudocache/
 .flaskenv
 .env
 testing
+adservers.pickle
+blocklist.pickle
+allowlist.pickle
+image_scraper.py
+images
 
 # Mono auto generated files
 mono_crash.*
