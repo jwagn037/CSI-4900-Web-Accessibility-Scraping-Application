@@ -46,4 +46,5 @@ def get_domain_dict(list_name):
             pickle_save("domain_lists/blocklist.pickle", domain_dict)
             return domain_dict
     else:
+        print(Exception("Invalid argument for get_domain_dict: ", list_name))
         return Exception("Invalid argument for get_domain_dict: ", list_name)

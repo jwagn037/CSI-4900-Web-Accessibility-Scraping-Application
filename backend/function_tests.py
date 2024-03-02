@@ -31,6 +31,7 @@ def test_domain_parser(trials=1000):
 
     print("Test concluded")
 
-adserver_dict = domain_parser.get_domain_dict("adservers")
-blocklist_dict = domain_parser.get_domain_dict("blocklist")
-allowlist_dict = domain_parser.get_domain_dict("allowlist")
+def build_allowlists_and_blocklists():
+    adserver_dict = domain_parser.get_domain_dict("adservers")
+    blocklist_dict = domain_parser.get_domain_dict("blocklist")
+    allowlist_dict = domain_parser.get_domain_dict("allowlist")
