@@ -11,7 +11,6 @@ def pickle_load(loc):
 def txt_to_dictionary(loc):
     with open(loc, 'r') as file:
         new_dict = {}
-        n = 0
         for line in file:
             if (line.startswith("#")):
                 continue
