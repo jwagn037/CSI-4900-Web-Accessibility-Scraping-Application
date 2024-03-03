@@ -22,7 +22,19 @@ def _get_webpage_id(url):
         return webpage_json_id
     except Exception as e:
         # The webpage isn't cached, or the DB failed for some reason
-        print("get_webpage_id() failed. The webpage may not be cached, or the database failed:", e)
+        print("_get_webpage_id() failed. The webpage may not be cached, or the database failed:", e)
+        return False
+
+# Searches webpage_src for a particular URL.
+# Returns the webpage_src_id if it exists, or False if it is not indexed.
+def _get_webpage_src_id(url):
+    try:
+        g.cur.execute('SELECT webpage_src_id FROM webpage_src WHERE webpage_url=(%s);', (url,))
+        webpage_src_id = g.cur.fetchone()[0]
+        return webpage_src_id
+    except Exception as e:
+        # The webpage isn't cached, or the DB failed for some reason
+        print("_get_webpage_src_id failed. The webpage may not be cached, or the database failed:", e)
         return False
 
 # Searches webpage_json to determine if a particular ID exists in the table.
@@ -86,7 +98,6 @@ def _insert_element(webpage_id, element_index):
     return inserted_id
 
 # Inserts a row to text_element and returns element_id
-# Inserts a row to element and returns element_id
 def _insert_text_element(element_id, element_type, element_data):
     g.cur.execute('INSERT INTO text_element (element_id, element_type, element_data) '
                 'VALUES (%s, %s, %s) RETURNING element_id',
@@ -95,11 +106,20 @@ def _insert_text_element(element_id, element_type, element_data):
     return inserted_id
 
 # Inserts a row to image_element and returns element_id
-# Inserts a row to element and returns element_id
 def _insert_image_element(element_id, caption, alt_text, alt_text_type, element_data):
     g.cur.execute('INSERT INTO image_element (element_id, caption, alt_text, alt_text_type, element_data) '
                 'VALUES (%s, %s, %s, %s, %s) RETURNING element_id',
                 (element_id, caption, alt_text, alt_text_type, element_data))
+    inserted_id = g.cur.fetchone()[0]  
+    return inserted_id
+
+# Inserts a row to request_record and returns request_record_id
+def _insert_request_record(url, request_type):
+    webpage_src_id = _get_webpage_src_id(url)
+    time_requested = _current_timestamp()
+    g.cur.execute('INSERT INTO request_record (webpage_src_id, time_requested, request_type) '
+                'VALUES (%s, %s, %s) RETURNING request_record_id',
+                (webpage_src_id, time_requested, request_type))
     inserted_id = g.cur.fetchone()[0]  
     return inserted_id
 
@@ -274,6 +294,7 @@ def read_cache_request(url):
         content.append(item_json)
         
     json_article['content'] = content
+    _insert_request_record(url, "READ")
     return json_article
 
 # Attempts to write to the database. Returns True on success, or False on a failure.
@@ -288,6 +309,7 @@ def write_cache_request(url, json):
         _shallow_delete_json_cache(url)
         new_webpage_json_id = _create_json_cache(url, json, new_src_index=False)
         _update_webpage_src(url, new_webpage_json_id)
+        _insert_request_record(url, "UPDATE")
         return json
     elif (webpage_cache_status==2): #webpage_src entry EXISTS; webpage_json entry DNE
         print("WCR3")
@@ -295,10 +317,12 @@ def write_cache_request(url, json):
         print("WCR3.1")
         _update_webpage_src(url, new_webpage_json_id)
         print("WCR3.2")
+        _insert_request_record(url, "UPDATE")
         return False
     elif (webpage_cache_status==3): #webpage_src entry DNE; webpage_json entry has UNKNOWN STATUS (if out delete operations are sound, then webpage_json entry PROBABLY DNE)
         print("WCR4")
         _create_json_cache(url, json, new_src_index=True)
+        _insert_request_record(url, "CREATE")
         return False
     else:
         return False

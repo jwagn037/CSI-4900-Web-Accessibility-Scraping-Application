@@ -1,5 +1,5 @@
 ################################### IMPORTS ###################################
-from flask import Flask, request, g
+from flask import Flask, request, g, render_template
 import psycopg2 # Docs: https://www.psycopg.org/docs/usage.html
 import wasa_db_handler
 import requests
@@ -42,6 +42,10 @@ def after_request(response):
 @app.get('/') # index root
 def index():
     return "WASA API up."
+
+@app.get('/admin/') # admin panel
+def admin():
+    return render_template("admin.html")
 
 @app.get('/url')
 def scrape_url():
