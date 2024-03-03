@@ -8,6 +8,7 @@
             <h4 class="text-6xl mb-3" [ngClass]="themeClass" *ngSwitchCase="'h4'">{{ line[1] }}</h4>
             <h5 class="text-6xl mb-3" [ngClass]="themeClass" *ngSwitchCase="'h5'">{{ line[1] }}</h5>
             <h6 class="text-6xl mb-3" [ngClass]="themeClass" *ngSwitchCase="'h6'">{{ line[1] }}</h6>
+            <img [ngClass]="themeClass" *ngSwitchCase="'img'" src="data:image/png;base64,{{ line[1] }}">
             <p class="text-5xl leading-normal mt-2 mb-6 hover:underline underline-offset-8" [ngClass]="themeClass" *ngSwitchDefault>{{ line[1] }}</p>
         </ng-container>
     </div>

@@ -94,6 +94,15 @@ def _insert_text_element(element_id, element_type, element_data):
     inserted_id = g.cur.fetchone()[0]  
     return inserted_id
 
+# Inserts a row to image_element and returns element_id
+# Inserts a row to element and returns element_id
+def _insert_image_element(element_id, caption, alt_text, alt_text_type, element_data):
+    g.cur.execute('INSERT INTO image_element (element_id, caption, alt_text, alt_text_type, element_data) '
+                'VALUES (%s, %s, %s, %s, %s) RETURNING element_id',
+                (element_id, caption, alt_text, alt_text_type, element_data))
+    inserted_id = g.cur.fetchone()[0]  
+    return inserted_id
+
 #####################################################################################################################
 ################################################ SELECT OPERATIONS ##################################################
 #####################################################################################################################
@@ -111,7 +120,7 @@ def _get_text_elements(url):
 
 def _get_image_elements(url):
     g.cur.execute("""
-        SELECT e.element_id, ie.caption, ie.alt_text, ie.alt_text_type, ie.element_data
+        SELECT e.element_index, ie.caption, ie.alt_text, ie.alt_text_type, ie.element_data
         FROM webpage_src ws
         JOIN webpage_json wj ON ws.webpage_id = wj.webpage_id
         JOIN "element" e ON e.webpage_id = ws.webpage_id
@@ -159,7 +168,11 @@ def _create_json_cache(url, json, new_src_index):
         item_type = item['type']
         element_id = _insert_element(webpage_json_id,index)
         if (item['type'] == 'img'):
-            print("image element")
+            caption=item['caption']
+            alt_text=item['alt_text']
+            alt_text_type=item['alt_text_type']
+            element_data=item['text']
+            img_element_id = _insert_image_element(element_id, caption, alt_text, alt_text_type, element_data)
         else:
             element_data=item['text'].strip()
             text_element_id = _insert_text_element(element_id,item_type,element_data)
@@ -242,17 +255,22 @@ def read_cache_request(url):
     text_elements = _get_text_elements(url)
     image_elements = _get_image_elements(url)
     elements = text_elements + image_elements
+    elements = sorted(elements, key=lambda item: item[0])
     
     content = []
     
     for item in elements:
-        if (len(item)==3):            
-            item_json ={}
+        print(item[0])
+        item_json ={}
+        if (len(item)==3):     
             item_json['type'] = item[1]
             item_json['text'] = item[2]
         if (len(item)==5):
-            # save image element
-            pass
+            item_json['type'] = 'img'
+            item_json['caption'] = item[1]
+            item_json['alt_text'] = item[2]
+            item_json['alt_text_type'] = item[3]
+            item_json['text'] = item[4]
         content.append(item_json)
         
     json_article['content'] = content

@@ -34,7 +34,7 @@ export class DynamicArticleComponent {
 
   // Helper for generating dynamic-article.html
   getTagName(tag: string): string {
-    const validTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'];
+    const validTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'img'];
     return validTags.includes(tag) ? tag : 'p';
   }
 
@@ -47,6 +47,13 @@ export class DynamicArticleComponent {
 
     for (var i=0; i<this.htmlJson.length;i++) {
       this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text']])
+
+      // if (this.htmlJson[i]['type'] != 'img') {
+      //   this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text']])
+      // } else {
+      //   this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text']])
+      //   console.log("image")
+      // }
     }
   }
 }

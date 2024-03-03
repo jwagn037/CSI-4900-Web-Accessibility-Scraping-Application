@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from trafilatura import extract
 import validators
 import domain_parser
+import base64
 
 
 ################################### FLASK ###################################
@@ -44,6 +45,7 @@ def index():
 
 @app.get('/url')
 def scrape_url():
+    # wasa_db_handler._total_wipe()
     # API mode options.
     parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
     
@@ -70,6 +72,16 @@ def scrape_url():
         response = requests.get(url)
         html = response.text
         
+        # options = webdriver.ChromeOptions()
+        # options.add_argument('--ignore-certificate-errors')
+        # options.add_argument('--incognito')
+        # # options.add_argument('--headless')
+        # driver = webdriver.Chrome(options=options)
+        # driver.set_window_position(-2000,0)
+        # driver.get(url)
+        # page_source = driver.page_source
+        # soup = BeautifulSoup(page_source, 'html.parser')
+        
         if response.status_code == 200:
             print("Parsing HTML:",url)
             response_json = parse_response(html, parse_mode)
@@ -77,9 +89,7 @@ def scrape_url():
             wasa_db_handler.write_cache_request(url, response_json)
         else:
             print("Save FAILURE: Invalid status_code:", response.status_code)
-        
         return response_json
-    
     return cache_json
     
 # CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
@@ -100,19 +110,18 @@ def parse_response(html, parse_mode=0):
     json_default = "{}" ## default empty JSON
     
     # minimal parsing:
-    tags = ['h1','h2','h3','h4','h5','h6', 'p', 'ul']
+    tags = ['h1','h2','h3','h4','h5','h6', 'p', 'ul', 'img']
     soup = BeautifulSoup(html, 'html.parser')
     result = soup.find_all(tags)
-    print(type(result))
     
     if (parse_mode == 0): #BS4 parsing ... technically already done above, since we use these results to do our other parsing
         return write_json(result)
     
     elif (parse_mode == 1): # Trafilatura parsing
-        print("MODE 1")
         soup.findAll(text=True)
-        text = extract(html, favor_precision=True)
+        text = extract(html, favor_precision=True, include_images=True)
         for item in result:
+            
             if (item.text not in text):
                 result.remove(item)
         return write_json(result)
@@ -130,9 +139,36 @@ def write_json(text, title='',author='',date=''):
     
     for item in text:
         item_json ={}
-        item_json['type'] = item.name
-        item_json['text'] = item.text
-        content.append(item_json)
+        if (item.name == "img"): # Image element
+            item_json['text'] = img_src_to_b64(item.get('src'))
+            if (item_json['text'] == False):
+                continue
+            
+            item_json['type'] = "img"
+            item_json['caption'] = item.get('alt')
+            item_json['alt_text'] = ''
+            item_json['alt_text_type'] = "original"
+            content.append(item_json)
+        else: # Textual element
+            item_json['type'] = item.name
+            item_json['text'] = item.text
+            content.append(item_json)
         
     json_article['content'] = content
     return json_article
+
+# Takes an image src and tries to convert it to base 64.
+# Returns a base 64 string on a success, or False on a failure.
+def img_src_to_b64(src):
+    try:
+        response = requests.get(src)
+        if response.status_code == 200:
+            image_content = response.content
+            base64_img = base64.b64encode(image_content).decode('utf-8')
+            return base64_img
+        else:
+            # print("img_src_to_b64 failed:", response.status_code)
+            return False
+    except Exception as e:
+        # print("Error:", e)
+        return False
