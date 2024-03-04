@@ -76,16 +76,6 @@ def scrape_url():
         response = requests.get(url)
         html = response.text
         
-        # options = webdriver.ChromeOptions()
-        # options.add_argument('--ignore-certificate-errors')
-        # options.add_argument('--incognito')
-        # # options.add_argument('--headless')
-        # driver = webdriver.Chrome(options=options)
-        # driver.set_window_position(-2000,0)
-        # driver.get(url)
-        # page_source = driver.page_source
-        # soup = BeautifulSoup(page_source, 'html.parser')
-        
         if response.status_code == 200:
             print("Parsing HTML:",url)
             response_json = parse_response(html, parse_mode)
