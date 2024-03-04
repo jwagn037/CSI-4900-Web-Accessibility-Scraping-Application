@@ -84,7 +84,7 @@ def scrape_url():
         else:
             print("Save FAILURE: Invalid status_code:", response.status_code)
         return response_json
-    return cache_json
+    return json_linter(cache_json)
     
 # CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
 @app.after_request
@@ -166,3 +166,60 @@ def img_src_to_b64(src):
     except Exception as e:
         # print("Error:", e)
         return False
+
+def json_linter(json):
+    json_article = {}
+    json_article['title'] = json['title']
+    json_article['author'] = json['author']
+    json_article['date'] = json['date']
+    content = []
+    
+    for item in json['content']:
+        item_json ={}
+        if (item['type'] != "img"): # Copy non-images
+            item_json['type'] = item['type']
+            item_json['text'] = item['text']
+        else: # Decide whether to include the image
+            if (include_image(item)):
+                item_json['type'] = item['type']
+                item_json['text'] = item['text']
+                item_json['alt_text'] = item['alt_text']
+                item_json['alt_text_type'] = item['alt_text_type']
+            else:
+                continue
+        content.append(item_json)
+        
+    json_article['content'] = content
+    return json_article
+
+from PIL import Image
+from io import BytesIO
+
+# Takes a base64 image. Returns True if the image
+# passes some heuristics. False if it does not.
+def include_image(image_element):
+    data = image_element['text']
+    include = True
+    
+    img = base64.b64decode(data)
+    image = Image.open(BytesIO(img))
+    
+    width, height = image.size
+    pixels = width*height
+    aspect_ratio = width / height
+    
+    print(width, height, aspect_ratio, pixels)
+    
+    if (pixels < 120000): # Heuristic from [14]: https://dl-acm-org.proxy.bib.uottawa.ca/doi/pdf/10.1145%2F3616849
+        include = False
+        
+    if (width < 700):
+        include = False
+        
+    if (height < 400):
+        include = False
+        
+    if (aspect_ratio < 1.0):
+        include = False
+    
+    return include
