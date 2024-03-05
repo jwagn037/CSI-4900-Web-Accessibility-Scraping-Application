@@ -1,12 +1,12 @@
 
-<html>
+<html >
     <div class="shadow-md accent" [ngClass]="themeClass">
         <h1 class="text-9xl">WASA</h1>
     </div>
     
     <div>
         <a id="about"></a>
-        <div class="min-h-fit min-w-fit px-5 pt-5 pb-5 primary flex justify-center items-center flex-col" [ngClass]="themeClass">
+        <div class="min-h-fit px-5 pt-5 pb-5 primary flex justify-center items-center flex-col" [ngClass]="themeClass">
             <!-- Information on WASA-->
             <div class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
                 <h1 class="text-6xl mb-2">Welcome to WASA</h1>
@@ -58,18 +58,15 @@
             </div>
         </div>
     </div>
-    <div class="min-h-screen px-5 pt-5 pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
+    <div class="px-5 pt-5 pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
         <a id="urlSubmissionField"></a>
-        <div class="shadow-xl max-w-7xl p-4 mb-4 rounded-2xl accent" [ngClass]="themeClass">
+        <div class="shadow-xl p-4 mb-4 max-w-7xl rounded-2xl accent" [ngClass]="themeClass">
             <!-- URL submission form-->
             <app-url-submission-form [themeClass]="themeClass" [btnTheme]="btnTheme"></app-url-submission-form>
         </div>
-
-        <div class="max-w-6xl" [ngClass]="themeClass">
+        <div class="max-w-7xl" [ngClass]="themeClass">
             <!-- dynamic article-->
             <app-dynamic-article [themeClass]="themeClass"></app-dynamic-article>
         </div>
-
     </div>
-    
 </html>
