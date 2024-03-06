@@ -280,7 +280,6 @@ def read_cache_request(url):
     content = []
     
     for item in elements:
-        print(item[0])
         item_json ={}
         if (len(item)==3):     
             item_json['type'] = item[1]

@@ -104,7 +104,7 @@ def parse_response(html, parse_mode=0):
     json_default = "{}" ## default empty JSON
     
     # minimal parsing:
-    tags = ['h1','h2','h3','h4','h5','h6', 'p', 'ul', 'img']
+    tags = ['h1','h2','h3','h4','h5','h6', 'p', 'ul', 'img', 'caption', 'figcaption']
     soup = BeautifulSoup(html, 'html.parser')
     result = soup.find_all(tags)
     
@@ -114,12 +114,10 @@ def parse_response(html, parse_mode=0):
     elif (parse_mode == 1): # Trafilatura parsing
         soup.findAll(text=True)
         text = extract(html, favor_precision=True, include_images=True)
-        for item in result:
-            
+        for item in result:            
             if (item.text not in text):
                 result.remove(item)
         return write_json(result)
-
     return json_default
 
     # Builds a JSON object with the format provided in the wiki.
@@ -161,10 +159,9 @@ def img_src_to_b64(src):
             base64_img = base64.b64encode(image_content).decode('utf-8')
             return base64_img
         else:
-            # print("img_src_to_b64 failed:", response.status_code)
             return False
     except Exception as e:
-        # print("Error:", e)
+        # print("Error:", e) # This isn't necessarily an error. If the image can't be encoded, then it was probably malformed when we scraped it.
         return False
 
 def json_linter(json):
@@ -173,12 +170,16 @@ def json_linter(json):
     json_article['author'] = json['author']
     json_article['date'] = json['date']
     content = []
+    headline_flag = False
     
     for item in json['content']:
         item_json ={}
-        if (item['type'] != "img"): # Copy non-images
-            item_json['type'] = item['type']
-            item_json['text'] = item['text']
+        if (item['type'] == 'h1'):
+            headline_flag = True
+        if (item['type'] != "img"):
+            if (headline_flag): # Chop off everything before the first headline
+                item_json['type'] = item['type']
+                item_json['text'] = item['text']
         else: # Decide whether to include the image
             if (include_image(item)):
                 item_json['type'] = item['type']
@@ -207,8 +208,6 @@ def include_image(image_element):
     width, height = image.size
     pixels = width*height
     aspect_ratio = width / height
-    
-    print(width, height, aspect_ratio, pixels)
     
     if (pixels < 120000): # Heuristic from [14]: https://dl-acm-org.proxy.bib.uottawa.ca/doi/pdf/10.1145%2F3616849
         include = False
