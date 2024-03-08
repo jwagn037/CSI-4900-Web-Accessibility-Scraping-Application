@@ -2,27 +2,27 @@
 <html >
     <title>Web Accessibility Scraping Project</title>
     
-    <div class="shadow-md accent" [ngClass]="themeClass">
+    <nav class="shadow-md accent" [ngClass]="themeClass">
         <h1 class="text-9xl">WASA</h1>
-    </div>
+    </nav>
     
-    <div>
+    <article>
         <a id="about"></a>
-        <div class="min-h-fit px-5 pt-5 pb-5 primary flex justify-center items-center flex-col" [ngClass]="themeClass">
+        <article class="min-h-fit px-5 pt-5 pb-5 primary flex justify-center items-center flex-col" [ngClass]="themeClass">
             <!-- Information on WASA-->
-            <div class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
+            <article class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
                 <h1 class="text-6xl mb-2">Welcome to WASA</h1>
                 <p class="text-2xl mb-2">The WASA (Web Accessibility Scraping Application) project is an ongoing CSI 4900 honours project at the University of Ottawa for the development of an application intended to parse inaccessible content for users with disabilities, serving up the scraped content in an accessible way for each user's individual needs.</p>
                 <p class="text-2xl mb-2">Submit the URL of an article you want to read, and we do the rest.</p>
                 <a href="#urlSubmissionField" class="text-3xl hover:underline underline-offset-8 highlight" [ngClass]="themeClass">Click or tap here to try it.</a>
-            </div>
+            </article>
     
             <!-- User options -->
-            <div class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
+            <article class="shadow-xl p-4 max-w-7xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
                 <h1 class="text-6xl mb-2">Options</h1>
                 <h2 class="text-4xl">Themes</h2>
                 <p class="text-2xl">Click or tap on the buttons below to change your theme. This will change the colour scheme of the webpage.</p>
-                <div class="grid grid-cols-2 gap-2 mt-5 mb-5">
+                <article class="grid grid-cols-2 gap-2 mt-5 mb-5">
                     <!-- Light mode selector -->
                     <button class="text-2xl font-semibold py-2 px-4 rounded light-btn"
                     (click)="setLightTheme()">Seaside</button>
@@ -35,10 +35,10 @@
                     <!-- Apricot mode selector -->
                     <button class="text-2xl font-semibold py-2 px-4 rounded access2-btn"
                     (click)="setAccess2Theme()">Apricot</button>
-                </div>
+                </article>
                 <h2 class="text-4xl">Content Options</h2>
                 <p class="text-2xl mb-2">Click or tap on the radio buttons below to change how the article is generated.</p>
-                <div class="flex justify-center space-x-4">
+                <article class="flex justify-center space-x-4">
                     <label class="inline-flex items-center me-5 cursor-pointer">
                       <input type="checkbox" value="" class="sr-only peer" checked>
                       <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-red-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
@@ -56,19 +56,19 @@
                       <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-orange-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
                       <span class="ms-3 text-sm font-medium">Give me a summary</span>
                     </label>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="px-5 pt-5 pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
+                </article>
+            </article>
+        </article>
+    </article>
+    <article class="px-5 pt-5 pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
         <a id="urlSubmissionField"></a>
-        <div class="shadow-xl p-4 mb-4 max-w-7xl rounded-2xl accent" [ngClass]="themeClass">
+        <article class="shadow-xl p-4 mb-4 max-w-7xl rounded-2xl accent" [ngClass]="themeClass">
             <!-- URL submission form-->
             <app-url-submission-form [themeClass]="themeClass" [btnTheme]="btnTheme"></app-url-submission-form>
-        </div>
-        <div class="max-w-7xl" [ngClass]="themeClass">
+        </article>
+        <article class="max-w-7xl" [ngClass]="themeClass">
             <!-- dynamic article-->
             <app-dynamic-article [themeClass]="themeClass"></app-dynamic-article>
-        </div>
-    </div>
+        </article>
+    </article>
 </html>
