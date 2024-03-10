@@ -24,9 +24,9 @@ export class UrlSubmissionFormComponent {
   OnSubmitUrl(){
     let handleUrl = new HandleUrlService();
     let userUrl : string = handleUrl.OnSubmitUrl(this.userUrl);
+    console.log(userUrl);
     if (userUrl.length > 0) {
-      // See: HandleUrlService for control logic.
-      // Not DRY... but we don't want to make useless queries.
+      // See HandleUrlService for control logic.
       this.configService.getArticle(userUrl);
     }
   }
