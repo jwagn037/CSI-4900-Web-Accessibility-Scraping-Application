@@ -17,6 +17,10 @@ html {
 	}
 }
 
+input {
+    color: black;
+}
+
 /* Light theme */
 .theme-light.primary {
     /* 14.78:1 */
