@@ -20,13 +20,13 @@ html {
 /* Light theme */
 .theme-light.primary {
     /* 14.78:1 */
-    background-color: #cadbdd;
-    color: black;
+    background-color: #115F69;
+    color: white;
 }
 
 .light-btn {
-    background-color: #cadbdd;
-    color: black;
+    background-color: #115F69;
+    color: white;
     border-radius: 0.25rem;
     border: 2px solid black;
 }
@@ -44,8 +44,8 @@ html {
 
 .theme-light.accent {
     /* 20.35:1 with black */
-    background-color: #ffffc4;
-    color: black;
+    background-color: #6B3000;
+    color: white;
 }
 
 .theme-light.highlight {
@@ -113,37 +113,37 @@ https://venngage.com/tools/accessible-color-palette-generator */
     border: 2px solid black;
 }
 .access1-btn:hover {
-    background-color: #e4eddd;
-    color: black;
-    border: 2px solid black;
+    background-color: #0008E6;
+    color: white;
+    border: 2px solid white;
 }
 
 .theme-access1.secondary {
     /* 8.74:1 */
-    background-color: #98aca0;
+    background-color: #BECBC5;
     color:black;
 }
 
 .theme-access1.accent {
     /* 8.96:1 */
-    background-color: #b0ad58;
-    color:black;
+    background-color: #726F36;
+    color:white;
 }
 
 .theme-access1.highlight {
-    background-color: #e4eddd;
-    color:black
+    background-color: #0008E6;
+    color:white;
 }
 
 /* Accessible theme 2 ... http://a11yrocks.com/colorPalette/*/
 .theme-access2.primary { 
     /* 8.78:1 */
-    background-color: #F19035;
+    background-color: #CA520C;
     color: black;
 }
 
 .access2-btn {
-    background-color: #F19035;
+    background-color: #CA520C;
     color: black;
     border-radius: 0.25rem;
     border: 2px solid black;
@@ -156,13 +156,13 @@ https://venngage.com/tools/accessible-color-palette-generator */
 
 .theme-access2.secondary {
     /* 14.91:1 */
-    background-color: #fbd1b8;
+    background-color: #F8CDA5;
     color:black;
 }
 
 .theme-access2.accent {
     /* 10.89:1 */
-    background-color: #9bca34;
+    background-color: #627E20;
     color:black;
 }
 
