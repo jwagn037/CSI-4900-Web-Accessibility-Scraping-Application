@@ -60,7 +60,7 @@ def scrape_url():
     # wasa_db_handler._total_wipe()
     # API mode options.
     parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
-    
+    wasa_db_handler.delete_cache_request()
     # Check for valid request
     if request.method != 'GET':
         return "Invalid request"
@@ -141,10 +141,10 @@ def write_json(text, title='',author='',date=''):
             item_json['type'] = "img"
             item_json['caption'] = ''
             
-            if (item.get('alt_text') is None):
+            if (item.get('alt') is None):
                 item_json['alt_text'] = ''
             else:
-                item_json['alt_text'] = item.get('alt_text')
+                item_json['alt_text'] = item.get('alt')
             item_json['alt_text_type'] = "original"
             content.append(item_json)
         else: # Textual element

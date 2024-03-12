@@ -290,7 +290,6 @@ def read_cache_request(url):
             item_json['alt_text'] = item[2]
             item_json['alt_text_type'] = item[3]
             item_json['text'] = item[4]
-            print(item[1])
         content.append(item_json)
         
     json_article['content'] = content
