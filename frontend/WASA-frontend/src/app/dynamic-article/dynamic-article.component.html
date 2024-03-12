@@ -16,22 +16,3 @@
         <a href="#urlSubmissionField" class="text-5xl mt-8 hover:underline underline-offset-6 highlight" [ngClass]="themeClass">Click or tap here to return to the URL submission field.</a>    
     </nav>
 </article>
-
-<!-- <article>
-    <hr class="mt-5 mb-5 flex-wrap">
-    <h1 *ngIf="this.htmlList.length>0" class="mt-5 mb-5 text-8xl">Your article is below:</h1>
-    <ng-container *ngFor="let line of htmlList" [ngSwitch]="getTagName(line[0])">
-        <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl mb-2 highlight" [ngClass]="themeClass" *ngSwitchCase="'h1'">{{ line[1] }}</h1>
-        <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-2 accent" [ngClass]="themeClass" *ngSwitchCase="'h2'">{{ line[1] }}</h2>
-        <h3 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-2" [ngClass]="themeClass" *ngSwitchCase="'h3'">{{ line[1] }}</h3>
-        <h4 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3" [ngClass]="themeClass" *ngSwitchCase="'h4'">{{ line[1] }}</h4>
-        <h5 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3" [ngClass]="themeClass" *ngSwitchCase="'h5'">{{ line[1] }}</h5>
-        <h6 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3" [ngClass]="themeClass" *ngSwitchCase="'h6'">{{ line[1] }}</h6>
-        <p  class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-normal mt-2 mb-6 hover:underline underline-offset-8" [ngClass]="themeClass" *ngSwitchDefault>{{ line[1] }}</p>
-        <img class="w-full mb-3" [ngClass]="themeClass" *ngSwitchCase="'img'" src="data:image/png;base64,{{ line[1] }}">
-    </ng-container>
-    <nav *ngIf="this.htmlList.length>0">
-        <hr class="mt-5 mb-5">
-        <a href="#urlSubmissionField" class="text-5xl mt-8 hover:underline underline-offset-6 highlight" [ngClass]="themeClass">Click or tap here to return to the URL submission field.</a>    
-    </nav>
-</article> -->
