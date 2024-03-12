@@ -15,7 +15,7 @@ import { ConfigService } from '../Services/config.service';
 export class DynamicArticleComponent {
   @Input() themeClass:string = ''; // from landing component
   htmlJson: any;
-  htmlList: Array<[string, string]> = [];
+  htmlList: Array<[string, string, string, string]> = [];
   private urlSubscription: Subscription;
 
   constructor(private configService: ConfigService) {
@@ -42,18 +42,18 @@ export class DynamicArticleComponent {
   // Dynamic-article.html needs the JSON content in
   // this specific format (see: var htmlList above)
   private setHtmlList() {
+    console.log(this.htmlJson)
     this.htmlList = [];
     this.htmlJson = JSON.parse(JSON.stringify(this.htmlJson['data']['content']));
 
     for (var i=0; i<this.htmlJson.length;i++) {
-      this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text']])
-
-      // if (this.htmlJson[i]['type'] != 'img') {
-      //   this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text']])
-      // } else {
-      //   this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text']])
-      //   console.log("image")
-      // }
+      if (this.htmlJson[i]['type'] == 'img') {
+        console.log("image")
+        console.log(this.htmlJson[i])
+        this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text'],this.htmlJson[i]['alt_text'],this.htmlJson[i]['alt_text_type']])
+      } else {
+        this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text'],'',''])
+      }
     }
   }
 }
