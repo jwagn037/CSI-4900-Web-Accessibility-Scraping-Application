@@ -60,7 +60,6 @@ def scrape_url():
     # wasa_db_handler._total_wipe()
     # API mode options.
     parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
-    wasa_db_handler.delete_cache_request()
     # Check for valid request
     if request.method != 'GET':
         return "Invalid request"
