@@ -39,6 +39,14 @@ def after_request(response):
         g.db.close()
     return response
 
+# CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response
+
 @app.get('/') # index root
 def index():
     return "WASA API up."
@@ -86,13 +94,7 @@ def scrape_url():
         return response_json
     return json_linter(cache_json)
     
-# CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET')
-    return response
+
 
 ################################### FUNCTIONS ###################################
     
@@ -137,8 +139,9 @@ def write_json(text, title='',author='',date=''):
                 continue
             
             item_json['type'] = "img"
-            item_json['caption'] = item.get('alt')
-            item_json['alt_text'] = ''
+            # item_json['caption'] = item.get('caption') # ERROR in DB: we save alt-text in the caption field instead of the alt_text field...
+            
+            item_json['alt_text'] = item.get('caption')
             item_json['alt_text_type'] = "original"
             content.append(item_json)
         else: # Textual element
@@ -180,11 +183,11 @@ def json_linter(json):
             if (headline_flag): # Chop off everything before the first headline
                 item_json['type'] = item['type']
                 item_json['text'] = item['text']
-        else: # Decide whether to include the image
+        else: # WAPI uses heuristics in a function to decide whether to include an image
             if (include_image(item)):
                 item_json['type'] = item['type']
                 item_json['text'] = item['text']
-                item_json['alt_text'] = item['alt_text']
+                item_json['alt_text'] = item['caption']
                 item_json['alt_text_type'] = item['alt_text_type']
             else:
                 continue

@@ -47,9 +47,8 @@ export class DynamicArticleComponent {
     this.htmlJson = JSON.parse(JSON.stringify(this.htmlJson['data']['content']));
 
     for (var i=0; i<this.htmlJson.length;i++) {
+      console.log(this.htmlJson[i])
       if (this.htmlJson[i]['type'] == 'img') {
-        console.log("image")
-        console.log(this.htmlJson[i])
         this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text'],this.htmlJson[i]['alt_text'],this.htmlJson[i]['alt_text_type']])
       } else {
         this.htmlList.push([this.htmlJson[i]['type'],this.htmlJson[i]['text'],'',''])
