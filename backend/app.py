@@ -91,7 +91,7 @@ def scrape_url():
             wasa_db_handler.write_cache_request(url, response_json)
         else:
             print("Save FAILURE: Invalid status_code:", response.status_code)
-        return response_json
+        return json_linter(response_json)
     return json_linter(cache_json)
     
 
@@ -139,9 +139,12 @@ def write_json(text, title='',author='',date=''):
                 continue
             
             item_json['type'] = "img"
-            # item_json['caption'] = item.get('caption') # ERROR in DB: we save alt-text in the caption field instead of the alt_text field...
+            item_json['caption'] = ''
             
-            item_json['alt_text'] = item.get('caption')
+            if (item.get('alt_text') is None):
+                item_json['alt_text'] = ''
+            else:
+                item_json['alt_text'] = item.get('alt_text')
             item_json['alt_text_type'] = "original"
             content.append(item_json)
         else: # Textual element
@@ -187,8 +190,9 @@ def json_linter(json):
             if (include_image(item)):
                 item_json['type'] = item['type']
                 item_json['text'] = item['text']
-                item_json['alt_text'] = item['caption']
+                item_json['alt_text'] = item['alt_text']
                 item_json['alt_text_type'] = item['alt_text_type']
+                item_json['caption'] = ''
             else:
                 continue
         content.append(item_json)
