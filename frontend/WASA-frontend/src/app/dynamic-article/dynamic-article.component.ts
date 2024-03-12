@@ -17,7 +17,6 @@ export class DynamicArticleComponent {
   htmlJson: any;
   htmlList: Array<[string, string, string, string]> = [];
   private urlSubscription: Subscription;
-  tab_num : number = 8;
 
   constructor(private configService: ConfigService) {
     // Subscribe to sender component messages
