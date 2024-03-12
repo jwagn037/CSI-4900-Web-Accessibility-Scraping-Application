@@ -3,6 +3,7 @@ import { DynamicArticleComponent } from '../dynamic-article/dynamic-article.comp
 import { UrlSubmissionFormComponent } from '../url-submission-form/url-submission-form.component';
 import { NgClass } from '@angular/common';
 
+
 @Component({
   selector: 'app-landing',
   standalone: true,
