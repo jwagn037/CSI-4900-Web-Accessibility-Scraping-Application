@@ -21,6 +21,10 @@ input {
     color: black;
 }
 
+button:focus {
+    outline: 12px solid yellow;
+}
+
 /* Light theme */
 .theme-light.primary {
     /* 14.78:1 */
@@ -76,7 +80,7 @@ input {
 .dark-btn:hover {
     background-color: #ff69b4;
     color: black;
-    border: 2px solid black;
+    border: 12px solid white;
 }
 
 .theme-dark.secondary {
