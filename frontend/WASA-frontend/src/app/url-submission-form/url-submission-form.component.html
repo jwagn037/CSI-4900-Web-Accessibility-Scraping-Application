@@ -1,7 +1,7 @@
 <form class="grid" (ngSubmit)="OnSubmitUrl()">
   <h1 class="text-8xl">Submit your URL here</h1>
   <label class="text-4xl mt-2 mb-2" for="urlSubmissionField">Enter a URL below and we will reformat it for you!</label>
-  <input class="text-6xl w-full border mb-2" type="url" placeholder="Enter your URL here" [(ngModel)]="userUrl" name="targetUrl"
+  <input required class="text-6xl w-full border mb-2" type="url" placeholder="Enter your URL here" [(ngModel)]="userUrl" name="targetUrl"
     id="urlSubmissionField">
   <h2 class="text-4xl">Content Options</h2>
   <p class="text-2xl mb-2">Click or tap on the radio buttons below to change how the article is generated.</p>
@@ -30,7 +30,7 @@
       <span class="ms-3 text-sm font-medium">Give me a summary</span>
     </label>
   </article>
-  <button type="submit" class="text-6xl font-semibold py-2 px-4 rounded" [ngClass]="btnTheme">Submit</button>
+  <button type="submit" class="text-6xl font-semibold py-2 px-4 rounded" [ngClass]="btnTheme">Submit<span hidden> URL</span></button>
   <!-- <button type="submit" class="text-6xl font-semibold py-2 px-4 rounded" [ngClass]="btnTheme"
   (click)="OnSubmitUrl()">Submit</button> -->
 </form>
