@@ -6,9 +6,8 @@ import requests
 from bs4 import BeautifulSoup
 from trafilatura import extract
 import validators
-import domain_parser
 import base64
-
+# import domain_parser
 
 ################################### FLASK ###################################
 
@@ -25,9 +24,9 @@ def before_request():
     g.cur = conn.cursor()
     g.db = conn
     # Build our adserver, allowlist, blocklist dictionaries:
-    adserver_dict = domain_parser.get_domain_dict("adservers")
-    blocklist_dict = domain_parser.get_domain_dict("blocklist")
-    allowlist_dict = domain_parser.get_domain_dict("allowlist")
+    # adserver_dict = domain_parser.get_domain_dict("adservers")
+    # blocklist_dict = domain_parser.get_domain_dict("blocklist")
+    # allowlist_dict = domain_parser.get_domain_dict("allowlist")
    
 @app.after_request
 def after_request(response):
@@ -37,11 +36,8 @@ def after_request(response):
         g.db.commit()
         g.cur.close()
         g.db.close()
-    return response
-
-# CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
-@app.after_request
-def after_request(response):
+    
+    # CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET')
@@ -57,7 +53,6 @@ def admin():
 
 @app.get('/url')
 def scrape_url():
-    # wasa_db_handler._total_wipe()
     # API mode options.
     parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
     # Check for valid request
@@ -100,7 +95,7 @@ def scrape_url():
     # Handles complex business logic for different HTML parsing approaches.
     # mode == 0: BS4 parsing
     # mode == 1: Trafilatura parsing
-    # Defaults to BS4 parsing.
+    # Defaults to an empty response.
 def parse_response(html, parse_mode=0):
     json_default = "{}" ## default empty JSON
     
