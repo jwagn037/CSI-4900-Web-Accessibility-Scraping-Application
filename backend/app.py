@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 from trafilatura import extract
 import validators
 import base64
+from PIL import Image
+from io import BytesIO
+
 # import domain_parser
 
 ################################### FLASK ###################################
@@ -18,7 +21,7 @@ def before_request():
     # Connect to the database:
     conn = psycopg2.connect(
          host="localhost",
-         database="WASA_DB",
+         database="WASA_db",
          user='WASA_admin',
          password='admin')
     g.cur = conn.cursor()
@@ -194,8 +197,6 @@ def json_linter(json):
     json_article['content'] = content
     return json_article
 
-from PIL import Image
-from io import BytesIO
 
 # Takes a base64 image. Returns True if the image
 # passes some heuristics. False if it does not.
