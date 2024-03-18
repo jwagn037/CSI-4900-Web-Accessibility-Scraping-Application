@@ -68,9 +68,15 @@ def scrape_url():
     if (len(args) > 0):
         url = args.get("url")
     if (len(args) > 1):
-        get_images = bool(args.get("get_images"))
+        if (str(args.get("get_images")) in ('true','True','1')):
+            get_images = True
+        else:
+            get_images = False
     if (len(args) > 2):
-        generate_alt_text = bool(args.get("generate_alt_text"))
+        if (str(args.get("generate_alt_text")) in ('true','True','1')):
+            generate_alt_text = True
+        else:
+            generate_alt_text = False
     if (len(args) == 0 or len(args) > 3):
         print("Caller supplied too many arguments to the API.")
         return "Caller supplied too many arguments to the API."
