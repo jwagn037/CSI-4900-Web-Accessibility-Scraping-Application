@@ -2,14 +2,15 @@
 <title>Web Accessibility Scraping Project</title>
 
 <nav class="shadow-md accent" [ngClass]="themeClass">
-    <h1 class="text-9xl">WASA</h1>
+    <h1 class="text-7xl md:text-9xl">WASA</h1>
 </nav>
 
-<article>
+<article class="w-screen">
     <a id="about"></a>
-    <article class="min-h-fit px-5 pt-5 pb-5 primary flex justify-center items-center flex-col" [ngClass]="themeClass">
+    <!-- min-h-fit md:px-5 md:pt-5 md:pb-5 primary flex justify-center items-center flex-col -->
+    <article class="md:min-h-fit md:px-5 md:pt-5 md:pb-5 primary flex md:justify-center md:items-center flex-col" [ngClass]="themeClass">
         <!-- Information on WASA-->
-        <article tabindex=0 class="shadow-xl p-4 max-w-5xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
+        <article tabindex=0 class="shadow-xl p-4 max-w-5xl mb-4 md:rounded-2xl secondary" [ngClass]="themeClass">
             <h1 class="text-6xl mb-2">Welcome to WASA</h1>
             <p  class="text-2xl mb-2">The WASA (Web Accessibility Scraping Application) project is an ongoing CSI 4900
                 honours project at the University of Ottawa for the development of an application intended to parse
@@ -20,11 +21,11 @@
                 [ngClass]="themeClass">Click or tap here to try it.</a>
         </article>
         <!-- Themes -->
-        <article tabindex=0 class="shadow-xl p-4 max-w-5xl mb-4 rounded-2xl secondary" [ngClass]="themeClass">
+        <article tabindex=0 class="shadow-xl p-4 max-w-5xl mb-4 md:rounded-2xl secondary" [ngClass]="themeClass">
             <h1 class="text-6xl mb-2">Themes</h1>
             <p class="text-2xl">Click or tap on the buttons below to change your theme. This will change the colour
                 scheme of the webpage.</p>
-            <article class="grid grid-cols-2 gap-2 mt-5 mb-5">
+            <article class="grid md:grid-cols-2 gap-2 mt-5 md:mb-5">
                 <!-- Light mode selector -->
                 <button tabindex=0 class="text-2xl font-semibold py-2 px-4 rounded light-btn"
                     (click)="setLightTheme()">Seaside</button>
@@ -41,9 +42,10 @@
         </article>
     </article>
 </article>
-<article  class="px-5 pt-5 pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
+<!-- min-h-fit md:px-5 md:pt-5 md:pb-5 primary flex justify-center items-center flex-col -->
+<article  class="md:px-5 md:pt-5 md:pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
     <a id="urlSubmissionField"></a>
-    <article class="shadow-xl p-4 mb-4 max-w-5xl rounded-2xl accent" [ngClass]="themeClass">
+    <article class="shadow-xl p-4 mb-4 max-w-5xl md:rounded-2xl accent" [ngClass]="themeClass">
         <!-- URL submission form-->
         <app-url-submission-form [themeClass]="themeClass" [btnTheme]="btnTheme"></app-url-submission-form>
     </article>

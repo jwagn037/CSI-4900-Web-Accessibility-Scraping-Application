@@ -10,7 +10,7 @@
 html {
 	scroll-behavior: smooth;
 }
-/* Disabled smooth scrolling for users who request it */
+/* Disable smooth scrolling for users who request it */
 @media screen and (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;
@@ -22,6 +22,12 @@ input {
 }
 
 button:focus {
+    outline: 12px solid yellow;
+}
+a:focus{
+    outline: 12px solid yellow;
+}
+input:focus{
     outline: 12px solid yellow;
 }
 
@@ -80,7 +86,7 @@ button:focus {
 .dark-btn:hover {
     background-color: #ff69b4;
     color: black;
-    border: 12px solid white;
+    border: 2px solid white;
 }
 
 .theme-dark.secondary {

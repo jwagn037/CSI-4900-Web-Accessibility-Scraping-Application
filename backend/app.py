@@ -67,12 +67,12 @@ def scrape_url():
     print("ARGS",args)
     if (len(args) > 0):
         url = args.get("url")
-    if (len(args) > 1):
+    if ("get_images" in args):
         if (str(args.get("get_images")) in ('true','True','1')):
             get_images = True
         else:
             get_images = False
-    if (len(args) > 2):
+    if ("generate_alt_text" in args):
         if (str(args.get("generate_alt_text")) in ('true','True','1')):
             generate_alt_text = True
         else:

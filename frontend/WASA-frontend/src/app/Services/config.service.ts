@@ -17,7 +17,7 @@ export class ConfigService {
     if (articleUrl.length == 0) {
       alert('Please enter a valid URL.');
     } else {
-    const fullUrl = `${this.apiUrl}?data=${articleUrl}`;
+    const fullUrl = `${this.apiUrl}?url=${articleUrl}`;
 
     this.http.get<{name: string}>(fullUrl)
       .subscribe(data => {
