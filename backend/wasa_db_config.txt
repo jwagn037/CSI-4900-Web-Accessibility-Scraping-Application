@@ -8,7 +8,7 @@ CREATE TABLE webpage_json(
 
 CREATE TABLE webpage_src(
 	webpage_src_id SERIAL PRIMARY KEY,
-	webpage_id INT UNIQUE NOT NULL,
+	webpage_id INT UNIQUE,
 	webpage_url VARCHAR(500) NOT NULL,
 	FOREIGN KEY (webpage_id) REFERENCES webpage_json(webpage_id)
 );

@@ -61,9 +61,19 @@ def scrape_url():
     # Check for valid request
     if request.method != 'GET':
         return "Invalid request"
-    
-    url = str(request.args.get('data'))
-    print("GET: ", url)
+    # Get arguments
+    url, get_images, generate_alt_text = None, True, False
+    args = str(request.args.get('data')).split("&")
+    print(args)
+    if (len(args) > 0):
+        url = args[0]
+    if (len(args) > 1):
+        get_images = bool(int(args[1]))
+    if (len(args) > 2):
+        generate_alt_text = bool(int(args[2]))
+    if (len(args) == 0 or len(args) > 2):
+        print("Caller supplied too many arguments to the API.")
+        return "Caller supplied too many arguments to the API."
     
     # check that the requested URL is valid
     # validators: https://pypi.org/project/validators/
@@ -89,7 +99,46 @@ def scrape_url():
         else:
             print("Save FAILURE: Invalid status_code:", response.status_code)
         return json_linter(response_json)
+    print("Returning from cache.")
     return json_linter(cache_json)
+
+# @app.get('/url')
+# def scrape_url():
+#     # API mode options.
+#     parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
+#     # Check for valid request
+#     if request.method != 'GET':
+#         return "Invalid request"
+    
+#     url = str(request.args.get('data'))
+#     print("GET: ", url, "(this does not make a request)")
+    
+#     # check that the requested URL is valid
+#     # validators: https://pypi.org/project/validators/
+#     if (validators.url(url) == False):
+#         return "Invalid URL"
+    
+#     # Try to read from cache
+#     cache_json = wasa_db_handler.read_cache_request(url)
+    
+#     if (cache_json == False):
+#         print("Read FAILURE: ", url)
+    
+#         # Can't read from cache. Make request.
+#         print("Requesting HTML:", url)
+#         response = requests.get(url)
+#         html = response.text
+        
+#         if response.status_code == 200:
+#             print("Parsing HTML:",url)
+#             response_json = parse_response(html, parse_mode)
+#             print("Saving JSON:",url)
+#             wasa_db_handler.write_cache_request(url, response_json)
+#         else:
+#             print("Save FAILURE: Invalid status_code:", response.status_code)
+#         return json_linter(response_json)
+#     print("Returning from cache.")
+#     return json_linter(cache_json)
     
 
 
