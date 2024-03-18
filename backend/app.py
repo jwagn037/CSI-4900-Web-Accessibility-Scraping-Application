@@ -87,8 +87,15 @@ def scrape_url():
     
     # check that the requested URL is valid
     # validators: https://pypi.org/project/validators/
+    if (validators.domain(url) == False):
+        print(g.RID, "Supplied url is a bad domain.")
+    else:
+        print(g.RID, "Supplied url is a good domain.")
     if (validators.url(url) == False):
+        print(g.RID, "Supplied url is a bad url.")
         return "Invalid URL"
+    else:
+        print(g.RID, "Supplied url is a good url.")
     
     # Try to read from cache
     print(g.RID, "Attempting to read data from the cache.")
@@ -116,46 +123,6 @@ def scrape_url():
     print(g.RID, "Read from cache succeeded.")
     print(g.RID, "Returning cached data. No requests were made to the target url for this transaction.")
     return json_linter(cache_json)
-
-# @app.get('/url')
-# def scrape_url():
-#     # API mode options.
-#     parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
-#     # Check for valid request
-#     if request.method != 'GET':
-#         return "Invalid request"
-    
-#     url = str(request.args.get('data'))
-#     print("GET: ", url, "(this does not make a request)")
-    
-#     # check that the requested URL is valid
-#     # validators: https://pypi.org/project/validators/
-#     if (validators.url(url) == False):
-#         return "Invalid URL"
-    
-#     # Try to read from cache
-#     cache_json = wasa_db_handler.read_cache_request(url)
-    
-#     if (cache_json == False):
-#         print("Read FAILURE: ", url)
-    
-#         # Can't read from cache. Make request.
-#         print("Requesting HTML:", url)
-#         response = requests.get(url)
-#         html = response.text
-        
-#         if response.status_code == 200:
-#             print("Parsing HTML:",url)
-#             response_json = parse_response(html, parse_mode)
-#             print("Saving JSON:",url)
-#             wasa_db_handler.write_cache_request(url, response_json)
-#         else:
-#             print("Save FAILURE: Invalid status_code:", response.status_code)
-#         return json_linter(response_json)
-#     print("Returning from cache.")
-#     return json_linter(cache_json)
-    
-
 
 ################################### FUNCTIONS ###################################
     
