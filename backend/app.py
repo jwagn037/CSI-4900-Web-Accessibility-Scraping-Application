@@ -9,6 +9,7 @@ import validators
 import base64
 from PIL import Image
 from io import BytesIO
+import random
 
 # import domain_parser
 
@@ -18,6 +19,8 @@ app = Flask(__name__)
 
 @app.before_request 
 def before_request():
+    # Generate a random request ID to attach to each print message
+    g.RID = "RID#" + str(random.randint(1,100000)) + ":"
     # Connect to the database:
     conn = psycopg2.connect(
          host="localhost",
@@ -35,7 +38,7 @@ def before_request():
 def after_request(response):
     # Close the database connection
     if g.db is not None:
-        print('closing connection')
+        print(g.RID, "Closing database connection.")
         g.db.commit()
         g.cur.close()
         g.db.close()
@@ -64,7 +67,7 @@ def scrape_url():
     # Get arguments
     url, get_images, generate_alt_text = None, True, False
     args = request.args
-    print("ARGS",args)
+    print(g.RID, "Getting caller-provided arguments for url, get_images, and generate_alt_text.")
     if (len(args) > 0):
         url = args.get("url")
     if ("get_images" in args):
@@ -78,9 +81,9 @@ def scrape_url():
         else:
             generate_alt_text = False
     if (len(args) == 0 or len(args) > 3):
-        print("Caller supplied too many arguments to the API.")
+        print(g.RID, "Caller supplied too many arguments to the API.")
         return "Caller supplied too many arguments to the API."
-    print("CALLER SUBMITTED: ", url, get_images, generate_alt_text)
+    print(g.RID, "Caller submitted the following arguments. \n\turl=", url, "\n\tget_images=", get_images, "\n\tgenerate_alt_text=", generate_alt_text)
     
     # check that the requested URL is valid
     # validators: https://pypi.org/project/validators/
@@ -88,25 +91,30 @@ def scrape_url():
         return "Invalid URL"
     
     # Try to read from cache
+    print(g.RID, "Attempting to read data from the cache.")
     cache_json = wasa_db_handler.read_cache_request(url)
     
     if (cache_json == False):
-        print("Read FAILURE: ", url)
+        print(g.RID, "Read from cache failed. Either this url is not cached, or the database failed.")
     
         # Can't read from cache. Make request.
-        print("Requesting HTML:", url)
+        print("Requesting HTML from the url.")
         response = requests.get(url)
         html = response.text
         
         if response.status_code == 200:
-            print("Parsing HTML:",url)
+            print(g.RID, "Request succesful.")
+            print(g.RID, "Parsing HTML.")
             response_json = parse_response(html, parse_mode)
-            print("Saving JSON:",url)
+            print(g.RID, "Parsing finished.")
+            print(g.RID, "Saving JSON for url=",url)
             wasa_db_handler.write_cache_request(url, response_json)
         else:
-            print("Save FAILURE: Invalid status_code:", response.status_code)
+            print(g.RID, "The request failed with status code=", response.status_code)
+        print(g.RID, "Returning data. A request was made to the target url for this transaction. The data has been saved for future requests.")
         return json_linter(response_json)
-    print("Returning from cache.")
+    print(g.RID, "Read from cache succeeded.")
+    print(g.RID, "Returning cached data. No requests were made to the target url for this transaction.")
     return json_linter(cache_json)
 
 # @app.get('/url')
