@@ -1,14 +1,14 @@
 <html lang="en">
 <title>Web Accessibility Scraping Project</title>
 
-<nav class="shadow-md accent" [ngClass]="themeClass">
-    <h1 class="text-7xl md:text-9xl">WASA</h1>
+<nav class="shadow-md accent w-screen" [ngClass]="themeClass">
+    <h1 class="text-7xl mx-5 md:text-9xl">WASA</h1>
 </nav>
 
 <article class="w-screen">
     <a id="about"></a>
     <!-- min-h-fit md:px-5 md:pt-5 md:pb-5 primary flex justify-center items-center flex-col -->
-    <article class="md:min-h-fit md:px-5 md:pt-5 md:pb-5 primary flex md:justify-center md:items-center flex-col" [ngClass]="themeClass">
+    <article class="md:min-h-fit md:pt-5 md:pb-5 primary flex  md:items-center flex-col" [ngClass]="themeClass">
         <!-- Information on WASA-->
         <article tabindex=0 class="shadow-xl p-4 max-w-5xl mb-4 md:rounded-2xl secondary" [ngClass]="themeClass">
             <h1 class="text-6xl mb-2">Welcome to WASA</h1>
@@ -43,7 +43,7 @@
     </article>
 </article>
 <!-- min-h-fit md:px-5 md:pt-5 md:pb-5 primary flex justify-center items-center flex-col -->
-<article  class="md:px-5 md:pt-5 md:pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
+<article  class="w-screen md:pt-5 md:pb-5 flex align-center items-center flex-col secondary" [ngClass]="themeClass">
     <a id="urlSubmissionField"></a>
     <article class="shadow-xl p-4 mb-4 max-w-5xl md:rounded-2xl accent" [ngClass]="themeClass">
         <!-- URL submission form-->
