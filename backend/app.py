@@ -63,17 +63,18 @@ def scrape_url():
         return "Invalid request"
     # Get arguments
     url, get_images, generate_alt_text = None, True, False
-    args = str(request.args.get('data')).split("&")
-    print(args)
+    args = request.args
+    print("ARGS",args)
     if (len(args) > 0):
-        url = args[0]
+        url = args.get("url")
     if (len(args) > 1):
-        get_images = bool(int(args[1]))
+        get_images = bool(args.get("get_images"))
     if (len(args) > 2):
-        generate_alt_text = bool(int(args[2]))
-    if (len(args) == 0 or len(args) > 2):
+        generate_alt_text = bool(args.get("generate_alt_text"))
+    if (len(args) == 0 or len(args) > 3):
         print("Caller supplied too many arguments to the API.")
         return "Caller supplied too many arguments to the API."
+    print("CALLER SUBMITTED: ", url, get_images, generate_alt_text)
     
     # check that the requested URL is valid
     # validators: https://pypi.org/project/validators/
