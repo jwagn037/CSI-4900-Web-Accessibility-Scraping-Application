@@ -1,6 +1,6 @@
 ################################### IMPORTS ###################################
 from flask import Flask, request, g, render_template
-import psycopg2 # Docs: https://www.psycopg.org/docs/usage.html
+import psycopg2
 import wasa_db_handler
 import requests
 from bs4 import BeautifulSoup
@@ -86,7 +86,6 @@ def scrape_url():
     print(g.RID, "Caller submitted the following arguments. \n\turl=", url, "\n\tget_images=", get_images, "\n\tgenerate_alt_text=", generate_alt_text)
     
     # check that the requested URL is valid
-    # validators: https://pypi.org/project/validators/
     if (validators.domain(url) == False):
         print(g.RID, "Supplied url is a bad domain.")
     else:
@@ -140,7 +139,6 @@ def parse_response(html, parse_mode=0):
     
     if (parse_mode == 0): #BS4 parsing ... technically already done above, since we use these results to do our other parsing
         return write_json(result)
-    
     elif (parse_mode == 1): # Trafilatura parsing
         soup.findAll(text=True)
         text = extract(html, favor_precision=True, include_images=True)
@@ -152,7 +150,8 @@ def parse_response(html, parse_mode=0):
 
     # Builds a JSON object with the format provided in the wiki.
     # Needs a ResultSet for text. The rest can be blank, or strings.
-def write_json(text, title='',author='',date=''):
+def write_json(text, title='',author='',date='', get_images=True, generate_alt_text=False):
+    print(g.RID,"Start write_json")
     json_article = {}
     json_article['title'] = title
     json_article['author'] = author
@@ -173,13 +172,14 @@ def write_json(text, title='',author='',date=''):
                 item_json['alt_text'] = ''
             else:
                 item_json['alt_text'] = item.get('alt')
-            item_json['alt_text_type'] = "original"
+            item_json['alt_text_type'] = "original" ################################## !!! #################################################################### !!! #################################################################### !!! #################################################################### !!! ##################################
             content.append(item_json)
+            print(item_json['alt_text'])
         else: # Textual element
             item_json['type'] = item.name
             item_json['text'] = item.text
             content.append(item_json)
-        
+    
     json_article['content'] = content
     return json_article
 
@@ -198,7 +198,10 @@ def img_src_to_b64(src):
         # print("Error:", e) # This isn't necessarily an error. If the image can't be encoded, then it was probably malformed when we scraped it.
         return False
 
-def json_linter(json):
+def json_linter(json, get_images=True, generate_alt_text=False):
+    generate_alt_text = True ################################## !!! #################################################################### !!! #################################################################### !!! ##################################
+
+    print(g.RID, "Start json_linter")
     json_article = {}
     json_article['title'] = json['title']
     json_article['author'] = json['author']
@@ -210,23 +213,40 @@ def json_linter(json):
         item_json ={}
         if (item['type'] == 'h1'):
             headline_flag = True
+
         if (item['type'] != "img"):
             if (headline_flag): # Chop off everything before the first headline
                 item_json['type'] = item['type']
                 item_json['text'] = item['text']
+
         else: # WAPI uses heuristics in a function to decide whether to include an image
-            if (include_image(item)):
+            if (get_images and include_image(item)):
                 item_json['type'] = item['type']
                 item_json['text'] = item['text']
-                item_json['alt_text'] = item['alt_text']
-                item_json['alt_text_type'] = item['alt_text_type']
+                item_json['alt_text_type'] = 'original'
+                if(generate_alt_text and len(item['alt_text']) == 0):
+                    item_json['alt_text_type'] = 'generated'
+                    print("Generating alt-text")
+                    item_json['alt_text'] = generate_alt_text_from_b64(item['text'])
+                else:
+                    item_json['alt_text'] = item['alt_text']
                 item_json['caption'] = ''
             else:
                 continue
-        content.append(item_json)
+            print(g.RID,"json_linter: img[\'alt_text\']=",item_json['alt_text'])
         
+        content.append(item_json)
+    
+    if (generate_alt_text) :
+        pass
+
     json_article['content'] = content
     return json_article
+
+def generate_alt_text_from_b64(image):
+        # generate alt-text
+        # update the cache
+        return "This is generated alt-text!"  # update the cache. We don't want to do the work of generating alt-text again.
 
 
 # Takes a base64 image. Returns True if the image
