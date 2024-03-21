@@ -65,7 +65,7 @@ def scrape_url():
     if request.method != 'GET':
         return "Invalid request"
     # Get arguments
-    url, get_images, generate_alt_text = None, True, False
+    url, get_images, generate_alt_text = None, True, True
     args = request.args
     print(g.RID, "Getting caller-provided arguments for url, get_images, and generate_alt_text.")
     if (len(args) > 0):
@@ -120,8 +120,8 @@ def scrape_url():
             print(g.RID, "The request failed with status code=", response.status_code)
             return ''
         print(g.RID, "Returning data. A request was made to the target url for this transaction. The data has been saved for future requests.")
-        return response_json
-        # return json_linter(response_json)
+        # return response_json
+        return json_linter(response_json)
     print(g.RID, "Read from cache succeeded.")
     print(g.RID, "Returning cached data. No requests were made to the target url for this transaction.")
     return cache_json
@@ -130,12 +130,13 @@ def scrape_url():
 ################################### FUNCTIONS ###################################
     
     # Handles business logic for parsing an html response using Trafilatura.
-def parse_response(html, get_images=True, generate_alt_text=False):
+    # Returns a JSON-like dictionary
+def parse_response(html):
     print(g.RID,"Start parsing")
     tags = ['h1','h2','h3','h4','h5','h6', 'p', 'ul', 'img', 'caption', 'figcaption']
     soup = BeautifulSoup(html, 'html.parser')
     result = soup.find_all(tags)
-
+    get_images, generate_alt_text = True, True # These serve no true purpose except as troubleshooting toggles
     json_article = {}
     json_article['title'] = webpage_title = '' # Not supported yet
     json_article['author'] = webpage_author = '' # Not supported yet
@@ -149,7 +150,6 @@ def parse_response(html, get_images=True, generate_alt_text=False):
     for element in result: # type(element)=bs4.element.Tag
         # Skip element if it isn't in the ResultSet of BS4 and Trafilatura
         if (element.text not in text): 
-            # result.remove(element)
             continue
 
         # Skip everything before the first h1 tag
@@ -160,7 +160,7 @@ def parse_response(html, get_images=True, generate_alt_text=False):
 
         element_content = {}
         # Textual elements: record as-is
-        if (element.name != "img"):
+        if (element.name != "img" and len(element.text)>0):
             element_content['type'] = element.name
             element_content['text'] = element.text
         # Images: scrutinize ("should we include this image?") and parse (img -> b64).
@@ -209,6 +209,22 @@ def generate_alt_text_from_b64(image):
         print(g.RID, "Using placeholder text for generated alt-text!")
         return "This is generated alt-text!"  # update the cache. We don't want to do the work of generating alt-text again.
 
+def json_linter(json, get_images=True, generate_alt_text=True):
+    print(g.RID,"Start linting")
+    print(type(json))
+    print(type(json['content']))
+    content = []
+    for element in json['content']:
+        if (element['type'] == 'img'):
+            if (get_images==False):
+                continue
+            if (element['alt_text_type'] == 'generated' and generate_alt_text==False):
+                continue
+        else:
+            pass
+        content.append(element)
+    json['content'] = content
+    return json
 
 # Takes a base64 image. Returns True if the image
 # passes some heuristics. False if it does not.
@@ -238,84 +254,3 @@ def include_image(image_element):
         include = False
     
     return include
-
-
-# def json_linter(json, get_images=True, generate_alt_text=False):
-#     generate_alt_text = True ################################## !!! #################################################################### !!! #################################################################### !!! ##################################
-
-#     print(g.RID, "Start json_linter")
-#     json_article = {}
-#     json_article['title'] = json['title']
-#     json_article['author'] = json['author']
-#     json_article['date'] = json['date']
-#     content = []
-#     headline_flag = False
-    
-#     for item in json['content']:
-#         item_json ={}
-#         if (item['type'] == 'h1'):
-#             headline_flag = True
-
-#         if (item['type'] != "img"):
-#             if (headline_flag): # Chop off everything before the first headline
-#                 item_json['type'] = item['type']
-#                 item_json['text'] = item['text']
-#         else: # WAPI uses heuristics in a function to decide whether to include an image
-#             if (get_images and include_image(item)):
-#                 item_json['type'] = item['type']
-#                 item_json['text'] = item['text']
-#                 item_json['alt_text_type'] = 'original'
-#                 if(generate_alt_text and len(item['alt_text']) == 0):
-#                     item_json['alt_text_type'] = 'generated'
-#                     item_json['alt_text'] = generate_alt_text_from_b64(item['text'])
-#                 else:
-#                     item_json['alt_text'] = item['alt_text']
-#                 item_json['caption'] = ''
-#             else:
-#                 continue
-#             print(g.RID,"json_linter: img[\'alt_text\']=",item_json['alt_text'])
-        
-#         content.append(item_json)
-    
-#     if (generate_alt_text) :
-#         pass
-
-#     json_article['content'] = content
-#     return json_article
-
-
-
-# Builds a JSON object with the format provided in the wiki.
-    # Needs a ResultSet for text. The rest can be blank, or strings.
-# def write_json(text, title='',author='',date='', get_images=True, generate_alt_text=False):
-#     print(g.RID,"Start write_json")
-#     json_article = {}
-#     json_article['title'] = title
-#     json_article['author'] = author
-#     json_article['date'] = date
-#     content = []
-    
-#     for item in text:
-#         item_json ={}
-#         if (item.name == "img"): # Image element
-#             item_json['text'] = img_src_to_b64(item.get('src'))
-#             if (item_json['text'] == False):
-#                 continue
-            
-#             item_json['type'] = "img"
-#             item_json['caption'] = ''
-            
-#             if (item.get('alt') is None):
-#                 item_json['alt_text'] = ''
-#             else:
-#                 item_json['alt_text'] = item.get('alt')
-#             item_json['alt_text_type'] = "original" ################################## !!! #################################################################### !!! #################################################################### !!! #################################################################### !!! ##################################
-#             content.append(item_json)
-#             print(item_json['alt_text'])
-#         else: # Textual element
-#             item_json['type'] = item.name
-#             item_json['text'] = item.text
-#             content.append(item_json)
-    
-#     json_article['content'] = content
-#     return json_article
