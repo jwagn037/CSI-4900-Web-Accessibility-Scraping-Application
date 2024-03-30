@@ -1,7 +1,6 @@
 ################################### IMPORTS ###################################
 from flask import Flask, request, g, render_template
 import psycopg2
-import wasa_db_handler
 import requests
 from bs4 import BeautifulSoup
 from trafilatura import extract
@@ -10,25 +9,43 @@ import base64
 from PIL import Image
 from io import BytesIO
 import random
-
-# import domain_parser
+import json
+from azure.ai.vision.imageanalysis import ImageAnalysisClient
+from azure.ai.vision.imageanalysis.models import VisualFeatures
+from azure.core.credentials import AzureKeyCredential
 
 ################################### FLASK ###################################
-
 app = Flask(__name__)
 
 @app.before_request 
 def before_request():
     # Generate a random request ID to attach to each print message
     g.RID = "RID#" + str(random.randint(1,100000)) + ":"
+
     # Connect to the database:
-    conn = psycopg2.connect(
-         host="localhost",
-         database="WASA_db",
-         user='WASA_admin',
-         password='admin')
-    g.cur = conn.cursor()
-    g.db = conn
+    try:
+        print(g.RID, "Reading Postgres credentials.")
+        with open("./credentials/postgres_creds.json", "r") as read_file:
+            data = json.load(read_file)
+        conn = psycopg2.connect(
+            host=data['host'],
+            database=data['database'],
+            user=data['user'],
+            password=data['password'])
+        g.cur = conn.cursor()
+        g.db = conn
+    except KeyError:
+        print(g.RID, "Error reading Azure Vision credentials.")
+
+    # Connect to Azure Vision
+    try:
+        print(g.RID,"Reading Azure Vision credentials.")
+        with open("./credentials/azure_vision_creds.json", "r") as read_file:
+            data = json.load(read_file)
+            g.azure_vision_endpoint = data['endpoint']
+            g.azure_vision_key = data['key']
+    except KeyError:
+        print(g.RID,"Error reading Azure Vision credentials.")
     # Build our adserver, allowlist, blocklist dictionaries:
     # adserver_dict = domain_parser.get_domain_dict("adservers")
     # blocklist_dict = domain_parser.get_domain_dict("blocklist")
@@ -44,6 +61,7 @@ def after_request(response):
         g.db.close()
     
     # CORS-ish: https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
+    # In the real world, this API would instead be behind a webserver configured to act as a reverse-proxy connected with the frontend.
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET')
@@ -59,15 +77,15 @@ def admin():
 
 @app.get('/url')
 def scrape_url():
-    # API mode options.
-    parse_mode = 1 # There are many ways to parse HTML. See parse_reponse() function header for information.
+    print(g.RID, "User made a new request.")
     # Check for valid request
     if request.method != 'GET':
+        print(g.RID, "Not a get request. Exiting.")
         return "Invalid request"
     # Get arguments
+    print(g.RID, "Getting caller-provided arguments for url, get_images, and generate_alt_text.")
     url, get_images, generate_alt_text = None, True, True
     args = request.args
-    print(g.RID, "Getting caller-provided arguments for url, get_images, and generate_alt_text.")
     if (len(args) > 0):
         url = args.get("url")
     if ("get_images" in args):
@@ -173,7 +191,7 @@ def parse_response(html):
             if(generate_alt_text and len(element.get('alt')) == 0):
                 print("Generating alt-text")
                 element_content['alt_text_type'] = 'generated'
-                element_content['alt_text'] = generate_alt_text_from_b64(element.text)
+                element_content['alt_text'] = generate_alt_text_from_b64(element_content['text'])
             elif len(element.get('alt')) > 0:
                 print(element.get('alt'),len(element.get('alt')))
                 print("Ripping included alt-text")
@@ -204,15 +222,34 @@ def img_src_to_b64(src):
         return False
 
 def generate_alt_text_from_b64(image):
-        # generate alt-text
-        # update the cache
-        print(g.RID, "Using placeholder text for generated alt-text!")
-        return "This is generated alt-text!"  # update the cache. We don't want to do the work of generating alt-text again.
+    generated_alt_text = "Default generated alt-text"
+    # Create an Image Analysis client for synchronous operations
+    client = ImageAnalysisClient(
+        endpoint=g.azure_vision_endpoint,
+        credential=AzureKeyCredential(g.azure_vision_key)
+    )
+    
+    # print(type(image)) # class 'str' ... b64 string
+    # target_img = "https://i.cbc.ca/1.7083976.1705421702!/fileImage/httpImage/image.jpg_gen/derivatives/16x9_780/r-l-stine.jpg"
+    # # target_img = "https://scrapeme.live/wp-content/uploads/2018/08/002.png"
+
+    # result = client.analyze_from_url(
+    #     image_url=target_img,
+    #     visual_features=[VisualFeatures.CAPTION],
+    #     # gender_neutral_caption=False,  # Optional (default is False)
+    # )
+
+    # # Print caption results to the console
+    # print("Image analysis results:")
+    # print(" Caption:")
+    # if result.caption is not None:
+    #     print(f"   '{result.caption.text}', Confidence {result.caption.confidence:.4f}")
+
+    # update the cache
+    return generated_alt_text  # update the cache. We don't want to do the work of generating alt-text again.
 
 def json_linter(json, get_images=True, generate_alt_text=True):
     print(g.RID,"Start linting")
-    print(type(json))
-    print(type(json['content']))
     content = []
     for element in json['content']:
         if (element['type'] == 'img'):
@@ -224,6 +261,7 @@ def json_linter(json, get_images=True, generate_alt_text=True):
             pass
         content.append(element)
     json['content'] = content
+    print(g.RID,"Linting finished")
     return json
 
 # Takes a base64 image. Returns True if the image

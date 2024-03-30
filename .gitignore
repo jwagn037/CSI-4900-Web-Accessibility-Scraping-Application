@@ -23,6 +23,7 @@ blocklist.pickle
 allowlist.pickle
 image_scraper.py
 images
+credentials
 
 # Mono auto generated files
 mono_crash.*
