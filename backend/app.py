@@ -10,6 +10,7 @@ from PIL import Image
 from io import BytesIO
 import random
 import json
+import wasa_db_handler
 from azure.ai.vision.imageanalysis import ImageAnalysisClient
 from azure.ai.vision.imageanalysis.models import VisualFeatures
 from azure.core.credentials import AzureKeyCredential
@@ -77,6 +78,8 @@ def admin():
 
 @app.get('/url')
 def scrape_url():
+    url, get_images, generate_alt_text = None, True, True
+
     print(g.RID, "User made a new request.")
     # Check for valid request
     if request.method != 'GET':
@@ -84,7 +87,6 @@ def scrape_url():
         return "Invalid request"
     # Get arguments
     print(g.RID, "Getting caller-provided arguments for url, get_images, and generate_alt_text.")
-    url, get_images, generate_alt_text = None, True, True
     args = request.args
     if (len(args) > 0):
         url = args.get("url")
@@ -99,27 +101,25 @@ def scrape_url():
         else:
             generate_alt_text = False
     if (len(args) == 0 or len(args) > 3):
-        print(g.RID, "Caller supplied too many arguments to the API.")
-        return "Caller supplied too many arguments to the API."
+        print(g.RID, "Error: expected 3 arguments, got:",len(args))
+        return "Expected 3 arguments, got:",len(args)
     print(g.RID, "Caller submitted the following arguments. \n\turl=", url, "\n\tget_images=", get_images, "\n\tgenerate_alt_text=", generate_alt_text)
     
     # check that the requested URL is valid
     if (validators.domain(url) == False):
-        print(g.RID, "Supplied url is a bad domain.")
+        print(g.RID, "Error: Supplied url is a bad domain.")
+        return "Error: Supplied url is a bad domain."
     else:
         print(g.RID, "Supplied url is a good domain.")
     if (validators.url(url) == False):
-        print(g.RID, "Supplied url is a bad url.")
-        return "Invalid URL"
+        print(g.RID, "Error: Supplied url is a bad url.")
+        return "Error: Suppled url is a bad url."
     else:
         print(g.RID, "Supplied url is a good url.")
     
     # Try to read from cache
-    print(g.RID, "Attempting to read data from the cache.")
-    print(g.RID, "^DISREGARD PREVIOUS LINE; DISABLED SAVE. cache_json=False hardcoded^")
-
-    # cache_json = wasa_db_handler.read_cache_request(url)
-    cache_json = False
+    print(g.RID, "Reading data from cache.")
+    cache_json = wasa_db_handler.read_cache_request(url)
     
     if (cache_json == False):
         print(g.RID, "Read from cache failed. Either this url is not cached, or the database failed.")
@@ -133,17 +133,16 @@ def scrape_url():
             print(g.RID, "Parsing finished.")
             print(g.RID, "Saving JSON for url=",url)
             print(g.RID, "^DISREGARD PREVIOUS LINE; DISABLED SAVE. cache_json=False hardcoded^")
-            # wasa_db_handler.write_cache_request(url, response_json)
+            wasa_db_handler.write_cache_request(url, response_json)
         else:
             print(g.RID, "The request failed with status code=", response.status_code)
             return ''
         print(g.RID, "Returning data. A request was made to the target url for this transaction. The data has been saved for future requests.")
         # return response_json
-        return json_linter(response_json)
+        return json_linter(response_json, get_images, generate_alt_text)
     print(g.RID, "Read from cache succeeded.")
     print(g.RID, "Returning cached data. No requests were made to the target url for this transaction.")
-    return cache_json
-    # return json_linter(cache_json)
+    return json_linter(cache_json, get_images, generate_alt_text)
 
 ################################### FUNCTIONS ###################################
     
@@ -189,12 +188,11 @@ def parse_response(html):
             element_content['type'] = 'img'
             element_content['caption'] = ''
             if(generate_alt_text and len(element.get('alt')) == 0):
-                print("Generating alt-text")
+                print(g.RID, "Generating alt-text")
                 element_content['alt_text_type'] = 'generated'
                 element_content['alt_text'] = generate_alt_text_from_b64(element_content['text'])
             elif len(element.get('alt')) > 0:
-                print(element.get('alt'),len(element.get('alt')))
-                print("Ripping included alt-text")
+                print(g.RID, "Ripping included alt-text")
                 element_content['alt_text_type'] = 'original'
                 element_content['alt_text'] = element.get('alt')
             else:
@@ -223,32 +221,32 @@ def img_src_to_b64(src):
 
 def generate_alt_text_from_b64(image):
     generated_alt_text = "Default generated alt-text"
+
+    try:
+        img = base64.b64decode(image)
+        image = BytesIO(img)
+    except:
+        return generated_alt_text # Something has gone wrong: we can't read this image.
+    
     # Create an Image Analysis client for synchronous operations
     client = ImageAnalysisClient(
         endpoint=g.azure_vision_endpoint,
         credential=AzureKeyCredential(g.azure_vision_key)
     )
-    
-    # print(type(image)) # class 'str' ... b64 string
-    # target_img = "https://i.cbc.ca/1.7083976.1705421702!/fileImage/httpImage/image.jpg_gen/derivatives/16x9_780/r-l-stine.jpg"
-    # # target_img = "https://scrapeme.live/wp-content/uploads/2018/08/002.png"
 
-    # result = client.analyze_from_url(
-    #     image_url=target_img,
-    #     visual_features=[VisualFeatures.CAPTION],
-    #     # gender_neutral_caption=False,  # Optional (default is False)
-    # )
+    # Get a caption for the image. This will be a synchronously (blocking) call.
+    result = client.analyze(
+        image_data=image,
+        visual_features=[VisualFeatures.CAPTION],
+    )
 
-    # # Print caption results to the console
-    # print("Image analysis results:")
-    # print(" Caption:")
-    # if result.caption is not None:
-    #     print(f"   '{result.caption.text}', Confidence {result.caption.confidence:.4f}")
+    if result.caption is not None:
+        generated_alt_text = result.caption.text
 
     # update the cache
     return generated_alt_text  # update the cache. We don't want to do the work of generating alt-text again.
 
-def json_linter(json, get_images=True, generate_alt_text=True):
+def json_linter(json, get_images, generate_alt_text):
     print(g.RID,"Start linting")
     content = []
     for element in json['content']:
@@ -273,7 +271,7 @@ def include_image(image_element):
         img = base64.b64decode(image_element)
         image = Image.open(BytesIO(img))
     except:
-        return False
+        return False # If we can't examine the image, we shouldn't return it.
     
     width, height = image.size
     pixels = width*height
@@ -281,14 +279,10 @@ def include_image(image_element):
     
     if (pixels < 120000): # Heuristic from [14]: https://dl-acm-org.proxy.bib.uottawa.ca/doi/pdf/10.1145%2F3616849
         include = False
-        
     if (width < 700):
         include = False
-        
     if (height < 400):
         include = False
-        
     if (aspect_ratio < 1.0):
         include = False
-    
     return include
