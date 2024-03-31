@@ -1,0 +1,15 @@
+{
+    "author": "WAPI",
+    "date": "",
+    "title": "Error! Bad domain.",
+    "content": [
+      {
+        "text": "Ruh roh! That's a bad domain",
+        "type": "h1"
+      },
+      {
+        "text": "Something is wrong with the domain you submitted. Please try again using a different domain.",
+        "type": "p"
+      }
+    ]
+  }

@@ -1,0 +1,15 @@
+{
+    "author": "WAPI",
+    "date": "",
+    "title": "Error! Bad URL.",
+    "content": [
+      {
+        "text": "Is that the right URL?",
+        "type": "h1"
+      },
+      {
+        "text": "Something doesn't look right with the URL you supplied. Please double-check it and try again.",
+        "type": "p"
+      }
+    ]
+  }

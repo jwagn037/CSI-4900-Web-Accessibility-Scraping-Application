@@ -1,0 +1,19 @@
+{
+    "author": "WAPI",
+    "date": "",
+    "title": "Error! Generic",
+    "content": [
+      {
+        "text": "Sorry! Something went wrong.",
+        "type": "h1"
+      },
+      {
+        "text": "We could not reach the URL you provided.",
+        "type": "p"
+      },
+      {
+        "text": "Please check that the URL you provided is correct. If it is, try again later.",
+        "type": "p"
+      }
+    ]
+  }

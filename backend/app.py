@@ -14,6 +14,7 @@ import wasa_db_handler
 from azure.ai.vision.imageanalysis import ImageAnalysisClient
 from azure.ai.vision.imageanalysis.models import VisualFeatures
 from azure.core.credentials import AzureKeyCredential
+from datetime import datetime, timezone
 
 ################################### FLASK ###################################
 app = Flask(__name__)
@@ -36,7 +37,7 @@ def before_request():
         g.cur = conn.cursor()
         g.db = conn
     except KeyError:
-        print(g.RID, "Error reading Azure Vision credentials.")
+        print(g.RID, "Error reading Postgres credentials.")
 
     # Connect to Azure Vision
     try:
@@ -84,7 +85,7 @@ def scrape_url():
     # Check for valid request
     if request.method != 'GET':
         print(g.RID, "Not a get request. Exiting.")
-        return "Invalid request"
+        return parse_standard_response("invalid_request.json")
     # Get arguments
     print(g.RID, "Getting caller-provided arguments for url, get_images, and generate_alt_text.")
     args = request.args
@@ -102,18 +103,18 @@ def scrape_url():
             generate_alt_text = False
     if (len(args) == 0 or len(args) > 3):
         print(g.RID, "Error: expected 3 arguments, got:",len(args))
-        return "Expected 3 arguments, got:",len(args)
+        return parse_standard_response("invalid_args.json")
     print(g.RID, "Caller submitted the following arguments. \n\turl=", url, "\n\tget_images=", get_images, "\n\tgenerate_alt_text=", generate_alt_text)
     
     # check that the requested URL is valid
     if (validators.domain(url) == False):
         print(g.RID, "Error: Supplied url is a bad domain.")
-        return "Error: Supplied url is a bad domain."
+        return parse_standard_response("bad_domain.json")
     else:
         print(g.RID, "Supplied url is a good domain.")
     if (validators.url(url) == False):
         print(g.RID, "Error: Supplied url is a bad url.")
-        return "Error: Suppled url is a bad url."
+        return parse_standard_response("bad_url.json")
     else:
         print(g.RID, "Supplied url is a good url.")
     
@@ -123,7 +124,10 @@ def scrape_url():
     
     if (cache_json == False):
         print(g.RID, "Read from cache failed. Either this url is not cached, or the database failed.")
-        response = requests.get(url)
+        try:
+            response = requests.get(url)
+        except:
+            return parse_standard_response("timeout.json")
         html = response.text
         
         if response.status_code == 200:
@@ -136,7 +140,7 @@ def scrape_url():
             wasa_db_handler.write_cache_request(url, response_json)
         else:
             print(g.RID, "The request failed with status code=", response.status_code)
-            return ''
+            return parse_standard_response("unreachable.json")
         print(g.RID, "Returning data. A request was made to the target url for this transaction. The data has been saved for future requests.")
         # return response_json
         return json_linter(response_json, get_images, generate_alt_text)
@@ -286,3 +290,20 @@ def include_image(image_element):
     if (aspect_ratio < 1.0):
         include = False
     return include
+
+# Takes a filename located in the standard_responses directory. Parses that file's content.
+# Standard responses are pre-formed JSON for common errors, such as destination unreachable errors.
+def parse_standard_response(response_name):
+    directory = "./standard_responses/"
+    try:
+        with open(directory + response_name, "r") as read_file:
+                response = json.load(read_file)
+    except:
+        response = ""
+
+    response['date'] = str(datetime.now)
+    error_data = {}
+    error_data['type'] = "h2"
+    error_data['text'] = "Error ID: "+ (g.RID).strip("RID#").strip(":")
+    response['content'].append(error_data)
+    return response

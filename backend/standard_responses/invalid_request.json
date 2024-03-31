@@ -1,0 +1,19 @@
+{
+    "author": "WAPI",
+    "date": "",
+    "title": "Error! Invalid request.",
+    "content": [
+      {
+        "text": "Hm, something doesn't look right...",
+        "type": "h1"
+      },
+      {
+        "text": "We expected a \"get\" request, but you did something else.",
+        "type": "p"
+      },
+      {
+        "text": "Please try again using the form.",
+        "type": "p"
+      }
+    ]
+  }

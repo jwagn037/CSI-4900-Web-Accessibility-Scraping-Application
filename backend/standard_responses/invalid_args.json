@@ -1,0 +1,19 @@
+{
+    "author": "WAPI",
+    "date": "",
+    "title": "Error! Invalid number of arguments.",
+    "content": [
+      {
+        "text": "Weird! Something doesn't look right",
+        "type": "h1"
+      },
+      {
+        "text": "We expected three arguments, but got something else.",
+        "type": "p"
+      },
+      {
+        "text": "Please try again.",
+        "type": "p"
+      }
+    ]
+  }
