@@ -8,14 +8,14 @@
 
   <article class="flex justify-center space-x-4 mb-2">
     <div class="flex items-center">
-      <input checked id="get-images-checkbox" type="checkbox" value="get_images" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+      <input (click)="toggleGetImages()" [checked]="this.getImages" id="get-images-checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
       <label for="get-images-checkbox" class="ms-2 text-2xl">Get images</label>
     </div>
     <div class="flex items-center">
-      <input checked id="generate-alt-text-checkbox" type="checkbox" value="generate_alt_text" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+      <input (click)="toggleGenerateAltText()" [checked]="this.generateAltText" id="generate-alt-text-checkbox" type="checkbox"  value="generate_alt_text" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
       <label for="generate-alt-text-checkbox" class="ms-2 text-2xl">Generate missing alt-text</label>
     </div>
   </article>
-  
+
   <button type="submit" class="text-6xl font-semibold py-2 px-4 rounded" [ngClass]="btnTheme">Submit</button>
 </form>
